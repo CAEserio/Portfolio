@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>if (/[?&]theme=dark/.test(location.search)) document.documentElement.setAttribute("data-theme", "dark")</script>
+<title>Melody Gen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=IBM+Plex+Sans:wght@400;600&family=Cormorant+Garamond:ital,wght@0,700;1,500&family=Share+Tech+Mono&family=Noto+Music&display=swap">
+<style>
+  :root {
+    --red: #e63946;
+    --bg: #efece5;
+    --surface: #ffffff;
+    --mid: #e4e0d7;
+    --border: #1a1a1a;
+    --text: #1a1a1a;
+    --dim: #6a675f;
+    --green: #0d7a38;
+    --paper: #fbf8f1;
+    --ink: #1c1b19;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0b0b;
+      --surface: #171717;
+      --mid: #101010;
+      --border: #2c2c2c;
+      --text: #e6e3dc;
+      --dim: #8a867d;
+      --green: #39e67a;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0b0b0b;
+    --surface: #171717;
+    --mid: #101010;
+    --border: #2c2c2c;
+    --text: #e6e3dc;
+    --dim: #8a867d;
+    --green: #39e67a;
+  }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ─── */
+  header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 2px solid var(--red);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  header h1 {
+    font-family: 'Orbitron', 'Arial Black', Impact, sans-serif;
+    font-weight: 900;
+    font-size: 1.15rem;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  header .sub { color: var(--dim); font-size: 0.8rem; flex: 1; }
+
+  .main {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 12px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ─── Panels ─── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  .panel h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 130px; flex: 1 1 130px; }
+
+  .field label, .lbl { font-size: 0.78rem; color: var(--dim); }
+
+  select, input[type="range"] {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--mid);
+    border: 1px solid var(--border);
+    padding: 9px 10px;
+    min-height: 40px;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  input[type="range"] { padding: 0; accent-color: var(--red); background: transparent; border: none; }
+
+  .chk { display: flex; align-items: center; gap: 8px; min-height: 40px; color: var(--text); font-size: 0.9rem; cursor: pointer; }
+  .chk input { accent-color: var(--red); width: 18px; height: 18px; }
+
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: var(--mid);
+    color: var(--text);
+    border-radius: 0;
+  }
+
+  button:hover:not(:disabled) { border-color: var(--red); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  .btn-primary { background: var(--red); border-color: var(--red); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #cf2b38; }
+
+  .btn-stop { background: transparent; border-color: var(--red); color: var(--red); }
+
+  .hidden { display: none !important; }
+
+  .seed { margin-top: 12px; font-family: 'Share Tech Mono', ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--dim); }
+  .seed b { color: var(--text); font-weight: 400; }
+
+  .hint { font-size: 0.85rem; color: var(--dim); margin-bottom: 12px; }
+
+  /* ─── Cards ─── */
+  .grid { display: flex; flex-direction: column; gap: 14px; }
+
+  .card {
+    border: 1px solid var(--border);
+    background: var(--mid);
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .card.sel { border-color: var(--red); box-shadow: 0 0 0 2px var(--red); }
+
+  .card-top, .card-bot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card-top { margin-bottom: 8px; }
+  .card-bot { margin-top: 8px; }
+
+  .tag { font-weight: 600; font-size: 0.9rem; }
+  .sc { font-family: 'Share Tech Mono', ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--dim); }
+  .star { margin-left: auto; font-size: 0.8rem; color: var(--red); font-weight: 600; }
+  .bars { font-size: 0.78rem; color: var(--dim); margin-left: auto; }
+
+  .prog { height: 3px; background: var(--border); margin-top: 8px; }
+  .prog i { display: block; height: 100%; width: 0; background: var(--red); }
+
+  /* ─── Sheet music paper ─── */
+  .paper {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 6px 4px;
+    border: 1px solid #0003;
+    box-shadow: 0 6px 20px #0004;
+    cursor: default;
+  }
+
+  .paper .ttl { text-align: center; padding: 10px 8px 2px; }
+  .paper .ttl h3 {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 1.9rem;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .paper .ttl p {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #55524b;
+    margin-top: 2px;
+  }
+
+  .score-host { width: 100%; }
+  .score-host svg { display: block; width: 100%; height: auto; color: var(--ink); }
+
+  .nt { color: var(--ink); }
+  .nt.on { color: var(--red); }
+  .nt .f { fill: currentColor; stroke: none; }
+  .nt .h { fill: var(--paper); stroke: currentColor; }
+  .nt .s { stroke: currentColor; }
+
+  /* ─── Log ─── */
+  .log {
+    background: var(--mid);
+    border: 1px dashed var(--border);
+    padding: 10px 12px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-family: 'Share Tech Mono', ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    color: var(--green);
+    line-height: 1.7;
+  }
+
+  .log .warn { color: #c98b00; }
+
+  .tempo-val { font-family: 'Share Tech Mono', ui-monospace, Menlo, Consolas, monospace; color: var(--text); }
+
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Melody Gen</h1>
+  <span class="sub">composer and score</span>
+  <button class="btn-stop hidden" id="stopBtn">Stop</button>
+</header>
+
+<div class="main">
+
+  <!-- Setup -->
+  <section class="panel" id="setup">
+    <h2>What is this music for?</h2>
+    <div class="row">
+      <div class="field">
+        <label for="sceneSelect">Scene</label>
+        <select id="sceneSelect">
+          <option value="overworld">Overworld</option>
+          <option value="dungeon(exploration)">Dungeon (Exploration)</option>
+          <option value="dungeon(combat)">Dungeon (Combat)</option>
+          <option value="main theme">Main Theme</option>
+          <option value="overworld(combat)">Overworld (Combat)</option>
+          <option value="manual">Manual (pick a key)</option>
+        </select>
+      </div>
+      <div class="field hidden" id="keyField">
+        <label for="keySelect">Key</label>
+        <select id="keySelect"></select>
+      </div>
+      <div class="field hidden" id="modeField">
+        <label for="modeSelect">Mode</label>
+        <select id="modeSelect">
+          <option value="major">Major</option>
+          <option value="minor">Minor</option>
+        </select>
+      </div>
+      <div class="field hidden" id="meterField">
+        <label for="meterSelect">Time</label>
+        <select id="meterSelect">
+          <option value="4">4/4</option>
+          <option value="3">3/4</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="lenSelect">Length</label>
+        <select id="lenSelect">
+          <option value="4">4 bars</option>
+          <option value="8" selected>8 bars</option>
+          <option value="16">16 bars</option>
+          <option value="32">32 bars</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="leadSelect">Melody sound</label>
+        <select id="leadSelect"><option value="auto">Auto (by scene)</option><option value="piano">Piano</option><option value="flute">Flute</option><option value="music box">Music box</option><option value="strings">Strings</option><option value="organ">Organ</option><option value="harp">Harp</option><option value="guitar">Nylon guitar</option><option value="marimba">Marimba</option><option value="bell">Bells</option><option value="synth lead">Synth lead</option><option value="chiptune">Chiptune (8-bit)</option><option value="brass">Brass</option><option value="clarinet">Clarinet</option></select>
+      </div>
+      <div class="field">
+        <label for="accSelect">Accompaniment sound</label>
+        <select id="accSelect"><option value="auto">Auto (by scene)</option><option value="piano">Piano</option><option value="harp">Harp</option><option value="guitar">Nylon guitar</option><option value="strings">Strings</option><option value="organ">Organ</option><option value="synth pad">Synth pad</option><option value="chiptune">Chiptune (8-bit)</option><option value="marimba">Marimba</option><option value="music box">Music box</option></select>
+      </div>
+      <div class="field">
+        <label for="drumSelect">Drums (heard, not shown on the score)</label>
+        <select id="drumSelect"><option value="auto">Auto (by scene)</option><option value="off">Off</option><option value="light">Light</option><option value="driving">Driving</option></select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <div class="field" style="flex:2 1 220px">
+        <label for="tempoSet">Tempo <span class="tempo-val" id="tempoSetVal">120</span> bpm</label>
+        <input type="range" id="tempoSet" min="40" max="360" value="120">
+      </div>
+      <label class="chk" style="flex:1 1 150px"><input type="checkbox" id="harmToggle" checked>Add chords</label>
+      <button class="btn-primary" id="genBtn" style="flex:1 1 150px">Generate melodies</button>
+    </div>
+    <div class="seed hidden" id="seedLine"></div>
+  </section>
+
+  <!-- Stage -->
+  <section class="panel hidden" id="stage">
+    <h2 id="stageTitle">Generation 0</h2>
+    <p class="hint" id="stageHint">Press play on each one, then tap the card you like best.</p>
+    <div class="grid" id="grid"></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn-primary" id="evolveBtn" disabled style="flex:1 1 180px">Evolve from selected</button>
+      <button id="finishBtn" disabled style="flex:1 1 180px">Use selected as final</button>
+    </div>
+  </section>
+
+  <!-- Final -->
+  <section class="panel hidden" id="final">
+    <h2>Final score</h2>
+    <div class="paper">
+      <div class="ttl"><h3 id="fTitle"></h3><p id="fSub"></p></div>
+      <div class="score-host" id="fHost" data-full="1"></div>
+    </div>
+    <div class="prog"><i id="fProg"></i></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn-primary btn-play" id="fPlay" data-uid="" style="flex:1 1 140px">Play</button>
+      <div class="field" style="flex:2 1 200px">
+        <label for="tempoFin">Tempo <span class="tempo-val" id="tempoFinVal">120</span> bpm</label>
+        <input type="range" id="tempoFin" min="40" max="360" value="120">
+      </div>
+      <button id="againBtn" style="flex:1 1 140px">Start over</button>
+    </div>
+    <div id="exportBox" class="hidden" style="margin-top:18px">
+      <h2>Download as MIDI</h2>
+      <p class="hint">Take it into any music program. The file keeps the notes, chords and drums, and you choose which instrument sounds it uses there.</p>
+      <div class="row">
+        <div class="field"><label for="gmLead">Melody instrument</label><select id="gmLead"></select></div>
+        <div class="field"><label for="gmAcc">Accompaniment instrument</label><select id="gmAcc"></select></div>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn-primary" id="dlBtn" style="flex:1 1 180px">Download MIDI (zip)</button></div>
+      <p class="hint" id="dlMsg" style="margin-top:10px"></p>
+    </div>
+  </section>
+
+  <div class="log" id="logBox"><div>&gt; melody generator initialized. pick a scene to begin.</div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+const LET = ['C','D','E','F','G','A','B']
+const LET_PC = [0,2,4,5,7,9,11]
+
+const keyPatternMajor = [2,2,1,2,2,2,1]
+const keyPatternMinor = [2,1,2,2,1,2,2]
+
+// [letter index, accidental] for each root pitch class
+const SPELL_MAJOR = [[0,0],[1,-1],[1,0],[2,-1],[2,0],[3,0],[3,1],[4,0],[5,-1],[5,0],[6,-1],[6,0]]
+const SPELL_MINOR = [[0,0],[0,1],[1,0],[2,-1],[2,0],[3,0],[3,1],[4,0],[4,1],[5,0],[6,-1],[6,0]]
+
+// key signature order + staff positions (diatonic note number, C0 = 0)
+const TREB_SHARP = [38,35,39,36,33,37,34]
+const TREB_FLAT  = [34,37,33,36,32,35,31]
+const BASS_SHARP = [24,21,25,22,19,23,20]
+const BASS_FLAT  = [20,23,19,22,18,21,24]
+
+const SCENE_NAMES = {
+  'overworld': 'Overworld',
+  'dungeon(exploration)': 'Dungeon (Exploration)',
+  'dungeon(combat)': 'Dungeon (Combat)',
+  'main theme': 'Main Theme',
+  'overworld(combat)': 'Overworld (Combat)',
+  'manual': 'Untitled'
+}
+
+// scene -> meter, energy (0 calm .. 1 driving), accompaniment patterns, default lead sound
+const STYLES = {
+  'overworld':            { meter: 4, energy: 0.6,  bass: ['arp8', 'alberti', 'walk'],         lead: 'flute',     acc: 'harp',     drums: 'off',     stac: 0 },
+  'dungeon(exploration)': { meter: 3, energy: 0.25, bass: ['drone3', 'waltz'],                lead: 'music box', acc: 'strings',  drums: 'off',     stac: 0 },
+  'dungeon(combat)':      { meter: 4, energy: 0.9,  bass: ['pulse8'],                         lead: 'synth lead', acc: 'chiptune', drums: 'driving', stac: 0.3 },
+  'main theme':           { meter: 4, energy: 0.45, bass: ['block', 'arp8', 'alberti'],       lead: 'piano',     acc: 'strings',  drums: 'off',     stac: 0 },
+  'overworld(combat)':    { meter: 4, energy: 0.8,  bass: ['pulse8', 'alberti'],              lead: 'brass',     acc: 'piano',    drums: 'driving', stac: 0.15 },
+  'manual':               { meter: 4, energy: 0.55, bass: ['arp8', 'alberti', 'block', 'walk'], lead: 'piano',   acc: 'piano',    drums: 'off',     stac: 0 }
+}
+
+const TO3 = { arp8: 'arp6', alberti: 'arp6', walk: 'waltz', block: 'waltz', pulse8: 'arp6', drone: 'drone3', drone3: 'drone3', waltz: 'waltz', arp6: 'arp6', sustain: 'sustain' }
+const TO4 = { drone3: 'drone', waltz: 'walk', arp6: 'arp8', arp8: 'arp8', alberti: 'alberti', walk: 'walk', block: 'block', pulse8: 'pulse8', drone: 'drone', sustain: 'sustain' }
+
+// ─── Harmony templates (scale degree roots, 0 = I). Two numbers in a bar = split bar ───
+const HARM = {
+  major: {
+    ant: [ [[0],[3],[1],[4]], [[0],[5],[3],[4]], [[0],[0],[3],[4]], [[0],[2],[3],[4]], [[0],[1],[3],[4]], [[0],[3],[0],[4]] ],
+    con: [ [[0],[3],[4],[0]], [[0],[5],[4],[0]], [[0],[1],[4],[0]], [[0],[3],[1,4],[0]], [[0],[5],[3,4],[0]], [[0],[2],[3,4],[0]] ],
+    contrast: [ [[5],[3],[0],[4]], [[3],[0],[1],[4]], [[5],[1],[3],[4]], [[2],[5],[3],[4]] ]
+  },
+  minor: {
+    ant: [ [[0],[3],[5],[4]], [[0],[5],[3],[4]], [[0],[6],[5],[4]], [[0],[2],[3],[4]], [[0],[0],[3],[4]], [[0],[3],[0],[4]] ],
+    con: [ [[0],[3],[4],[0]], [[0],[5],[4],[0]], [[0],[6],[4],[0]], [[0],[2],[4],[0]], [[0],[5],[3,4],[0]], [[0],[3],[3,4],[0]] ],
+    contrast: [ [[2],[6],[0],[4]], [[5],[6],[0],[4]], [[2],[5],[3],[4]], [[3],[6],[2],[4]] ]
+  }
+}
+
+// ─── Rhythm cells: [duration in eighths, isRest]. calm / mid / driving ───
+const CELLS = {
+  8: [
+    [ [[8,0]], [[4,0],[4,0]], [[4,0],[2,0],[2,0]], [[2,0],[2,0],[4,0]], [[6,0],[2,0]], [[3,0],[1,0],[4,0]], [[2,0],[2,0],[2,0],[2,0]] ],
+    [ [[2,0],[2,0],[2,0],[2,0]], [[3,0],[1,0],[2,0],[2,0]], [[2,0],[1,0],[1,0],[2,0],[2,0]], [[2,0],[2,0],[3,0],[1,0]], [[1,0],[1,0],[2,0],[4,0]], [[3,0],[1,0],[3,0],[1,0]], [[2,0],[1,0],[1,0],[4,0]], [[4,0],[1,0],[1,0],[2,0]] ],
+    [ [[1,0],[1,0],[1,0],[1,0],[2,0],[2,0]], [[2,0],[2,0],[1,0],[1,0],[1,0],[1,0]], [[1,0],[1,0],[1,0],[1,0],[1,0],[1,0],[1,0],[1,0]], [[3,0],[1,0],[1,0],[1,0],[1,0],[1,0]], [[2,0],[1,0],[1,0],[2,0],[1,0],[1,0]], [[1,0],[1,0],[2,0],[1,0],[1,0],[2,0]], [[3,0],[1,0],[3,0],[1,0]] ]
+  ],
+  6: [
+    [ [[6,0]], [[4,0],[2,0]], [[2,0],[4,0]], [[2,0],[2,0],[2,0]], [[3,0],[1,0],[2,0]] ],
+    [ [[2,0],[2,0],[2,0]], [[3,0],[1,0],[2,0]], [[2,0],[1,0],[1,0],[2,0]], [[1,0],[1,0],[2,0],[2,0]], [[2,0],[2,0],[1,0],[1,0]] ],
+    [ [[1,0],[1,0],[1,0],[1,0],[2,0]], [[1,0],[1,0],[1,0],[1,0],[1,0],[1,0]], [[2,0],[1,0],[1,0],[1,0],[1,0]], [[3,0],[1,0],[1,0],[1,0]] ]
+  ]
+}
+
+const HCELLS = {
+  8: [ [[2,0],[2,0],[4,0]], [[4,0],[4,0]], [[2,0],[2,0],[2,0],[2,1]], [[3,0],[1,0],[4,0]], [[2,0],[1,0],[1,0],[4,0]], [[4,0],[2,0],[2,1]] ],
+  6: [ [[2,0],[4,0]], [[4,0],[2,1]], [[3,0],[1,0],[2,0]], [[2,0],[2,0],[2,1]] ]
+}
+
+const FCELLS = {
+  8: [ [[8,0]], [[8,0]], [[6,0],[2,1]], [[4,0],[4,1]] ],
+  6: [ [[6,0]], [[6,0]], [[4,0],[2,1]] ]
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+let tempo = 120
+let harm = true
+let nbars = 8
+let cur_key = null
+let cur_style = STYLES['overworld']
+let cur_scene = 'overworld'
+let lead_sel = 'auto'
+let seed = ''
+let seedpick = 0
+let melodies = []
+let generation = 0
+let picked = null
+let reg = {}
+let uid_n = 0
+let clef_ok = false
+let CM = null
+const CLEF_FONT = "'Noto Music','Noto Sans Symbols 2','Segoe UI Symbol','Apple Symbols','FreeSerif','Symbola',serif"
+
+const $ = id => document.getElementById(id)
+const rint = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a
+const r1 = n => Math.round(n * 10) / 10
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x))
+const pick = arr => arr[Math.floor(Math.random() * arr.length)]
+const dmod = i => ((i % 7) + 7) % 7
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// KEY / SCALE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function random_seed(length) {
+  const min = Math.pow(10, length - 1)
+  const max = 9 * min + (min - 1)
+  return String(Math.floor(Math.random() * (max - min + 1)) + min)
+}
+
+function selectTempo(selection) {
+  let randomTempo
+  let key = ""
+
+  switch(selection.toLowerCase()) {
+    case "overworld":
+      randomTempo = rint(120, 140)
+      key = "major"
+      break
+    case "dungeon(exploration)":
+      randomTempo = rint(70, 80)
+      key = "minor"
+      break
+    case "dungeon(combat)":
+      randomTempo = rint(150, 185)
+      key = "minor"
+      break
+    case "main theme":
+      randomTempo = rint(100, 118)
+      key = "major"
+      break
+    case "overworld(combat)":
+      randomTempo = rint(140, 165)
+      key = "minor"
+      break
+    default:
+      randomTempo = 120
+      key = "major"
+      break
+  }
+
+  return [randomTempo, key]
+}
+
+// scale degree index i (any integer, 7 per octave) -> midi
+function sc(k, i) {
+  return k.tonic + 12 * Math.floor(i / 7) + k.offs[dmod(i)]
+}
+
+// scale degree index -> staff spelling (alt is applied by the caller)
+function spellI(k, i) {
+  const d = dmod(i)
+  const letter = dmod(k.L0 + i)
+  const acc = k.accs[d]
+  const m = sc(k, i)
+  const oct = Math.floor((m - acc) / 12) - 1
+  return { m: m, letter: letter, acc: acc, oct: oct, dn: oct * 7 + letter }
+}
+
+function buildKey(pc, pattern) {
+  const keyPattern = pattern === 'minor' ? keyPatternMinor : keyPatternMajor
+  const offs = [0]
+  for (let i = 0; i < 6; i++) offs.push(offs[i] + keyPattern[i])
+
+  const sp = (pattern === 'minor' ? SPELL_MINOR : SPELL_MAJOR)[pc]
+  const L0 = sp[0]
+  const tonic = 58 + ((pc - 10 + 12) % 12)
+
+  const accs = []
+  const by_letter = [0,0,0,0,0,0,0]
+  for (let d = 0; d < 7; d++) {
+    const letter = (L0 + d) % 7
+    let a = ((((pc + offs[d]) % 12) - LET_PC[letter]) + 12) % 12
+    if (a > 6) a -= 12
+    accs.push(a)
+    by_letter[letter] = a
+  }
+
+  let ks_t = ''
+  let ks_n = 0
+  for (let l = 0; l < 7; l++) {
+    if (by_letter[l] === 1) { ks_t = '#'; ks_n++ }
+    if (by_letter[l] === -1) { ks_t = 'b'; ks_n++ }
+  }
+
+  const k = { pc: pc, pattern: pattern, offs: offs, L0: L0, tonic: tonic, accs: accs, by_letter: by_letter, ks: { t: ks_t, n: ks_n } }
+  k.name = LET[L0] + (accs[0] === 1 ? '#' : accs[0] === -1 ? 'b' : '') + ' ' + pattern
+
+  // melody window: roughly C4 up a tenth
+  let lo = -14
+  while (sc(k, lo) < 60) lo++
+  k.lo = lo
+  k.hi = lo + 10
+  k.center = lo + 5
+  return k
+}
+
+function selectKey(seed, pattern, manual_pc) {
+  let pc
+  if (manual_pc !== undefined) {
+    pc = manual_pc
+  } else {
+    const at = Math.floor(Math.random() * (seed.length - 1))
+    pc = parseInt(seed.substr(at, 2)) % 12
+  }
+  return buildKey(pc, pattern)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HARMONY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function chordAtSlot(segs, s) {
+  for (let j = segs.length - 1; j >= 0; j--) {
+    if (s >= segs[j].s0) return segs[j].c
+  }
+  return segs[0].c
+}
+
+// degrees (mod 7) that belong to the chord
+function ctMods(k, c) {
+  const m = [c.d % 7, (c.d + 2) % 7, (c.d + 4) % 7]
+  if (c.s) m.push((c.d + 6) % 7)
+  return m
+}
+
+function harmonyFor(k, type, slots) {
+  const bank = HARM[k.pattern === 'minor' ? 'minor' : 'major'][type]
+  const tpl = pick(bank)
+  return tpl.map((bar, bi) => {
+    let ds = bar
+    if (slots !== 8 && ds.length > 1) ds = [ds[ds.length - 1]]
+    const n = ds.length
+    return ds.map((d, j) => {
+      const c = { d: d, s: 0 }
+      if (d === 4 && bi >= 2 && Math.random() < 0.4) c.s = 1
+      return { c: c, s0: Math.floor(j * slots / n), n: Math.floor(slots / n) }
+    })
+  })
+}
+
+function makeForm(n) {
+  switch(n) {
+    case 4:  return [{ t: 'con' }]
+    case 8:  return [{ t: 'ant' }, { t: 'con' }]
+    case 16: return [{ t: 'ant' }, { t: 'con' }, { t: 'contrast' }, { t: 'con', reuse: 1 }]
+    default: return [{ t: 'ant' }, { t: 'con' }, { t: 'contrast' }, { t: 'con', reuse: 1 },
+                     { t: 'ant' }, { t: 'con' }, { t: 'contrast' }, { t: 'con', reuse: 1 }]
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MELODY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function isStrong(slots, e) {
+  return e.s === 0 || (slots === 8 && e.s === 4) || e.d >= 4
+}
+
+function wpick(cands, temp) {
+  let mx = -1e9
+  cands.forEach(c => { if (c.s > mx) mx = c.s })
+  let tot = 0
+  cands.forEach(c => { c.w = Math.exp((c.s - mx) / temp); tot += c.w })
+  let r = Math.random() * tot
+  for (let j = 0; j < cands.length; j++) {
+    r -= cands[j].w
+    if (r <= 0) return cands[j].q
+  }
+  return cands[cands.length - 1].q
+}
+
+function pickPitch(c, strong, ctm, want, goal) {
+  const cands = []
+  const prev = c.prev
+  const prev2 = c.prev2
+  for (let q = c.lo; q <= c.hi; q++) {
+    let s = 0
+    if (prev !== null) {
+      const d = Math.abs(q - prev)
+      s += d === 0 ? -1.2 : d === 1 ? 2.2 : d === 2 ? 1.2 : d === 3 ? 0.1 : d === 4 ? -0.8 : d === 5 ? -1.6 : -3
+      if (prev2 !== null) {
+        const lastd = prev - prev2
+        if (Math.abs(lastd) >= 3) {
+          s += (Math.sign(q - prev) === -Math.sign(lastd) && d <= 2) ? 2 : -1.5
+        } else if (d === 0 && lastd === 0) {
+          s -= 3
+        }
+        if (Math.abs(lastd) === 1 && d === 1 && Math.sign(q - prev) === Math.sign(lastd)) s += 0.3
+      }
+    }
+    const ct = ctm.indexOf(dmod(q)) >= 0
+    s += strong ? (ct ? 2.6 : -2.6) : (ct ? 0.5 : 0)
+    s -= 0.18 * Math.abs(q - want)
+    if (goal !== null && goal !== undefined) s -= 1.5 * Math.abs(q - goal)
+    cands.push({ q: q, s: s })
+  }
+  return wpick(cands, 0.9)
+}
+
+function pickCell(c, rests) {
+  const e = c.st.energy
+  const probs = e < 0.4 ? [0.55, 0.4, 0.05] : e < 0.7 ? [0.15, 0.6, 0.25] : [0.05, 0.35, 0.6]
+  let r = Math.random()
+  let t = 0
+  while (t < 2 && r > probs[t]) { r -= probs[t]; t++ }
+  const cell = pick(CELLS[c.slots][t]).map(x => [x[0], x[1]])
+  if (rests && cell.length > 1 && cell[cell.length - 1][0] >= 2 && Math.random() < (1 - e) * 0.3) {
+    cell[cell.length - 1][1] = 1
+  }
+  return cell
+}
+
+function setPrev(c, evs) {
+  let a = null
+  let b = null
+  evs.forEach(e => { if (!e.r) { b = a; a = e.p.i } })
+  if (a !== null) { c.prev = a; c.prev2 = b }
+}
+
+function genBar(c, cell, segs, o) {
+  const evs = []
+  let s = 0
+  let last_n = -1
+  cell.forEach((x, j) => { if (!x[1]) last_n = j })
+  cell.forEach((x, j) => {
+    if (x[1]) {
+      evs.push({ s: s, d: x[0], r: 1, p: null })
+    } else {
+      const e = { s: s, d: x[0] }
+      const strong = isStrong(c.slots, e)
+      const ctm = ctMods(c.k, chordAtSlot(segs, s))
+      const goal = (j === last_n && o.goal !== undefined) ? o.goal : null
+      const q = pickPitch(c, strong, ctm, o.want, goal)
+      evs.push({ s: s, d: x[0], r: 0, p: { i: q, alt: 0 } })
+      c.prev2 = c.prev
+      c.prev = q
+    }
+    s += x[0]
+  })
+  return evs
+}
+
+function snapCT(c, q, ctm) {
+  let best = q
+  let bd = 99
+  for (let x = q - 3; x <= q + 3; x++) {
+    if (x < c.lo || x > c.hi) continue
+    if (ctm.indexOf(dmod(x)) < 0) continue
+    const d = Math.abs(x - q)
+    if (d < bd || (d === bd && Math.random() < 0.5)) { bd = d; best = x }
+  }
+  return best
+}
+
+function repairBar(c, evs, segs) {
+  evs.forEach(e => {
+    if (e.r) return
+    if (isStrong(c.slots, e)) {
+      e.p.i = snapCT(c, e.p.i, ctMods(c.k, chordAtSlot(segs, e.s)))
+    }
+  })
+}
+
+function copyBar(src) {
+  return src.map(e => ({ s: e.s, d: e.d, r: e.r, p: e.r ? null : { i: e.p.i, alt: 0 } }))
+}
+
+function fitI(c, q) {
+  while (q < c.lo) q += 7
+  while (q > c.hi) q -= 7
+  return q
+}
+
+function seqBar(c, src, shift, segs) {
+  const evs = src.map(e => ({ s: e.s, d: e.d, r: e.r, p: e.r ? null : { i: fitI(c, e.p.i + shift), alt: 0 } }))
+  repairBar(c, evs, segs)
+  setPrev(c, evs)
+  return evs
+}
+
+function nearestTonic(c, ref) {
+  let best = c.center
+  let bd = 99
+  for (let q = c.lo; q <= c.hi; q++) {
+    if (dmod(q) !== 0) continue
+    const d = Math.abs(q - ref)
+    if (d < bd) { bd = d; best = q }
+  }
+  return best
+}
+
+function halfGoal(c) {
+  const ref = c.prev === null ? c.center : c.prev
+  let best = c.center
+  let bd = 99
+  for (let q = c.lo; q <= c.hi; q++) {
+    const dm = dmod(q)
+    if (dm !== 1 && dm !== 4) continue
+    const d = Math.abs(q - ref) + Math.random() * 0.8
+    if (d < bd) { bd = d; best = q }
+  }
+  return best
+}
+
+function cadenceBar(c, t, segs) {
+  const sl = c.slots
+  if (t === 'con') {
+    const cell = pick(FCELLS[sl]).map(x => [x[0], x[1]])
+    const ref = c.prev === null ? c.center : c.prev
+    const evs = []
+    let s = 0
+    cell.forEach(x => {
+      if (x[1]) evs.push({ s: s, d: x[0], r: 1, p: null })
+      else evs.push({ s: s, d: x[0], r: 0, p: { i: nearestTonic(c, ref), alt: 0 } })
+      s += x[0]
+    })
+    setPrev(c, evs)
+    return evs
+  }
+  const cell = pick(HCELLS[sl]).map(x => [x[0], x[1]])
+  return genBar(c, cell, segs, { want: c.center + 1, goal: halfGoal(c) })
+}
+
+function makePhrase(c, ph) {
+  const k = c.k
+  const chords = harmonyFor(k, ph.t, c.slots)
+  const center = c.center
+  const want = ph.t === 'contrast' ? [center + 2, center + 3, center + 4] : [center, center + 1, center + 3]
+  const bars = []
+
+  // bar 1: the main idea. The consequent and the return start with the same motif.
+  let b1
+  if (c.motif && ph.t !== 'contrast') {
+    b1 = copyBar(c.motif)
+    repairBar(c, b1, chords[0])
+    setPrev(c, b1)
+  } else {
+    b1 = genBar(c, pickCell(c, false), chords[0], { want: want[0] })
+    if (ph.t !== 'contrast') c.motif = copyBar(b1)
+  }
+  bars.push(b1)
+
+  // bar 2: answer. Usually a sequence of bar 1, sometimes a fresh line on the same rhythm.
+  let b2
+  if (Math.random() < 0.7) {
+    const sh = ph.t === 'contrast' ? 1 : (Math.random() < 0.6 ? -1 : 1)
+    b2 = seqBar(c, b1, sh, chords[1])
+  } else {
+    const cell = b1.map(e => [e.d, e.r])
+    b2 = genBar(c, cell, chords[1], { want: want[1] })
+  }
+  bars.push(b2)
+
+  // bar 3: development toward the high point, and the approach to the cadence
+  let b3
+  if (ph.t === 'con') {
+    const tt = nearestTonic(c, center)
+    const g = fitI(c, tt + (Math.random() < 0.5 ? 1 : -1))
+    b3 = genBar(c, pickCell(c, false), chords[2], { want: want[2], goal: g })
+  } else if (Math.random() < 0.4) {
+    b3 = seqBar(c, b1, 2, chords[2])
+  } else {
+    b3 = genBar(c, pickCell(c, true), chords[2], { want: want[2] })
+  }
+  bars.push(b3)
+
+  // bar 4: cadence
+  bars.push(cadenceBar(c, ph.t === 'con' ? 'con' : 'half', chords[3]))
+
+  return { chords: chords, mel: bars }
+}
+
+// minor keys: raise the 7th when it leads to the tonic or sits over V
+function fixAlt(k, p) {
+  p.mel.forEach((bar, b) => {
+    bar.forEach((e, j) => {
+      if (e.r) return
+      e.p.alt = 0
+      if (k.pattern !== 'minor' || dmod(e.p.i) !== 6) return
+      const ch = chordAtSlot(p.chords[b], e.s)
+      let nxt = null
+      for (let jj = j + 1; jj < bar.length && nxt === null; jj++) if (!bar[jj].r) nxt = bar[jj]
+      if (nxt === null && b + 1 < p.mel.length) {
+        for (let jj = 0; jj < p.mel[b + 1].length && nxt === null; jj++) if (!p.mel[b + 1][jj].r) nxt = p.mel[b + 1][jj]
+      }
+      const to_tonic = nxt !== null && nxt.p.i === e.p.i + 1
+      if (ch.d === 4 || to_tonic) e.p.alt = 1
+    })
+  })
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACCOMPANIMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function bassTones(k, c) {
+  let i0 = c.d
+  while (sc(k, i0) > 50) i0 -= 7
+  while (sc(k, i0) < 41) i0 += 7
+  const a3 = (k.pattern === 'minor' && c.d === 4) ? 1 : 0
+  return [
+    { i: i0,      alt: 0 },
+    { i: i0 + 2,  alt: a3 },
+    { i: i0 + 4,  alt: 0 },
+    { i: i0 + 7,  alt: 0 },
+    { i: i0 + 9,  alt: a3 },
+    { i: i0 + 11, alt: 0 },
+    { i: i0 + 6,  alt: 0 }
+  ]
+}
+
+function patEvs(name, L) {
+  const ev = []
+  const add = (s, d, idx) => { if (s < L) ev.push({ s: s, d: Math.min(d, L - s), idx: idx }) }
+  switch(name) {
+    case 'arp8':    [0,1,2,3,2,1,2,1].forEach((x, s) => add(s, 1, [x])); break
+    case 'alberti': [0,2,1,2,0,2,1,2].forEach((x, s) => add(s, 1, [x])); break
+    case 'pulse8':  [0,0,3,0,0,0,3,0].forEach((x, s) => add(s, 1, [x])); break
+    case 'walk':    [0,1,2,1].forEach((x, j) => add(j * 2, 2, [x])); break
+    case 'block':   add(0, 4, [0,1,2]); add(4, 4, [0,1,2]); break
+    case 'sustain': add(0, L, [0,1,2]); break
+    case 'drone':   add(0, L, [0,2]); break
+    case 'waltz':   add(0, 2, [0]); add(2, 2, [1,2]); add(4, 2, [1,2]); break
+    case 'arp6':    [0,1,2,3,2,1].forEach((x, s) => add(s, 1, [x])); break
+    case 'drone3':  add(0, L, [0,2]); break
+    default:        add(0, L, [0,1,2]); break
+  }
+  return ev
+}
+
+function patFor(name, meter) {
+  return meter === 3 ? (TO3[name] || 'sustain') : (TO4[name] || 'block')
+}
+
+function buildAcc(k, p) {
+  p.acc = []
+  for (let b = 0; b < p.nbars; b++) {
+    const pat = patFor(p.pats[Math.floor(b / 4)], p.beats)
+    const evs = []
+    p.chords[b].forEach(seg => {
+      const T = bassTones(k, seg.c)
+      patEvs(pat, seg.n).forEach(x => {
+        let idx = x.idx.slice()
+        if (seg.c.s && idx.length === 3) idx.push(6)
+        const ps = idx.map(j => ({ i: T[j].i, alt: T[j].alt })).sort((a, b2) => a.i - b2.i)
+        evs.push({ s: seg.s0 + x.s, d: x.d, r: 0, ps: ps })
+      })
+    })
+    p.acc.push(evs)
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FITNESS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function fitness(p) {
+  const k = cur_key
+  const slots = p.slots
+  const ns = []
+  p.mel.forEach((bar, b) => bar.forEach(e => { if (!e.r) ns.push({ i: e.p.i, b: b, s: e.s, d: e.d }) }))
+  const n = ns.length
+  if (n < 3) return 0
+  let tot = 0
+
+  // chord tones on strong beats
+  let st_n = 0
+  let st_ok = 0
+  ns.forEach(x => {
+    if (!isStrong(slots, x)) return
+    st_n++
+    if (ctMods(k, chordAtSlot(p.chords[x.b], x.s)).indexOf(dmod(x.i)) >= 0) st_ok++
+  })
+  const rs = st_n ? st_ok / st_n : 1
+  tot += 22 * clamp((rs - 0.5) / 0.45, 0, 1)
+
+  // motion
+  let steps = 0
+  let big = 0
+  let leaps = 0
+  let resolved = 0
+  let runs = 0
+  for (let j = 1; j < n; j++) {
+    const d = ns[j].i - ns[j - 1].i
+    const ad = Math.abs(d)
+    if (ad === 1) steps++
+    if (ad >= 5) big++
+    if (ad >= 3 && j + 1 < n) {
+      leaps++
+      const d2 = ns[j + 1].i - ns[j].i
+      if (Math.sign(d2) === -Math.sign(d) && Math.abs(d2) <= 2) resolved++
+    }
+    if (j >= 2 && d === 0 && ns[j - 1].i === ns[j - 2].i) runs++
+  }
+  const sr = steps / (n - 1)
+  const dist = sr < 0.5 ? 0.5 - sr : sr > 0.8 ? sr - 0.8 : 0
+  tot += 15 * clamp(1 - dist / 0.35, 0, 1)
+  tot += Math.max(0, 15 - 5 * big)
+  tot += leaps ? 8 * resolved / leaps : 8
+  tot -= Math.min(9, 3 * runs)
+
+  // range and variety of pitch
+  let mn = 99
+  let mx = -99
+  const seen = {}
+  ns.forEach(x => { mn = Math.min(mn, x.i); mx = Math.max(mx, x.i); seen[x.i] = 1 })
+  const span = mx - mn
+  tot += span >= 6 && span <= 10 ? 6 : span < 6 ? Math.max(0, span) : Math.max(0, 6 - (span - 10) * 2)
+  tot += Math.min(4, Object.keys(seen).length / 2)
+
+  // one high point per phrase
+  let climax = 0
+  const nph = Math.floor(p.nbars / 4)
+  for (let ph = 0; ph < nph; ph++) {
+    const inph = ns.filter(x => Math.floor(x.b / 4) === ph)
+    if (!inph.length) continue
+    let top = -99
+    inph.forEach(x => { top = Math.max(top, x.i) })
+    const cnt = inph.filter(x => x.i === top).length
+    if (cnt <= 2 && inph[0].i < top) climax++
+  }
+  tot += 6 * climax / nph
+
+  // repetition: same rhythm, same contour
+  const rhy = p.mel.map(bar => bar.map(e => e.s + ':' + e.d + ':' + e.r).join(','))
+  const con = p.mel.map(bar => {
+    const q = bar.filter(e => !e.r).map(e => e.p.i)
+    const iv = []
+    for (let j = 1; j < q.length; j++) iv.push(q[j] - q[j - 1])
+    return iv.length ? iv.join(',') : 'x' + Math.random()
+  })
+  let rep_r = 0
+  let rep_c = 0
+  for (let b = 0; b < p.nbars; b++) {
+    for (let a = 0; a < b; a++) {
+      if (rhy[a] === rhy[b]) { rep_r++; break }
+    }
+    for (let a = 0; a < b; a++) {
+      if (con[a] === con[b]) { rep_c++; break }
+    }
+  }
+  tot += 10 * clamp((rep_r / p.nbars) / 0.6, 0, 1)
+  tot += 8 * clamp((rep_c / p.nbars) / 0.3, 0, 1)
+
+  // rhythm variety
+  const durs = {}
+  ns.forEach(x => { durs[x.d] = 1 })
+  const nd = Object.keys(durs).length
+  tot += nd === 1 ? 0 : nd <= 4 ? 6 : 4
+
+  // cadences
+  const last = ns[n - 1]
+  if (dmod(last.i) === 0 && last.d >= 4) tot += 8
+  let longends = 0
+  for (let ph = 0; ph < nph; ph++) {
+    const bar = p.mel[ph * 4 + 3].filter(e => !e.r)
+    if (bar.length && bar[bar.length - 1].d >= 4) longends++
+  }
+  tot += 4 * longends / nph
+
+  // rests
+  let rests = 0
+  let all = 0
+  p.mel.forEach(bar => bar.forEach(e => { all += e.d; if (e.r) rests += e.d }))
+  const rr = rests / all
+  tot += rr <= 0.15 ? 6 : Math.max(0, 6 * (1 - (rr - 0.15) / 0.25))
+
+  return Math.min(100, Math.round(100 * tot / 106))
+}
+
+//Returns True or False
+function melodyRules(p, base, add) {
+  if (base === null) return p.score >= 74 + 3 * add
+  return p.score >= base + (add - 2) * 2
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMPOSE + MUTATE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function newCtx(k, st, slots) {
+  return { k: k, st: st, slots: slots, lo: k.lo, hi: k.hi, center: k.center, prev: null, prev2: null, motif: null }
+}
+
+function finish(p) {
+  fixAlt(cur_key, p)
+  buildAcc(cur_key, p)
+  p.score = fitness(p)
+  return p
+}
+
+function compose(k, st, n) {
+  const beats = st.meter
+  const slots = beats * 2
+  const c = newCtx(k, st, slots)
+  const form = makeForm(n)
+  const p = { uid: '', st: st, slots: slots, beats: beats, nbars: n, form: form, chords: [], mel: [], acc: [], pats: [], score: 0 }
+  const done = []
+  const list = st.bass.slice()
+
+  form.forEach((ph, pi) => {
+    let res
+    let pat
+    if (ph.reuse !== undefined && Math.random() < 0.7) {
+      const src = done[ph.reuse]
+      res = { chords: JSON.parse(JSON.stringify(src.chords)), mel: JSON.parse(JSON.stringify(src.mel)) }
+      pat = p.pats[ph.reuse]
+      setPrev(c, res.mel[3])
+    } else {
+      res = makePhrase(c, ph)
+      pat = ph.t === 'contrast' && list.length > 1 ? pick(list.filter(x => x !== p.pats[0])) : (pi === 0 ? pick(list) : p.pats[0])
+    }
+    done.push(res)
+    p.pats.push(pat)
+    res.chords.forEach(x => p.chords.push(x))
+    res.mel.forEach(x => p.mel.push(x))
+  })
+
+  return finish(p)
+}
+
+function ctxFor(p) {
+  const c = newCtx(cur_key, p.st || cur_style, p.slots)
+  c.motif = null
+  return c
+}
+
+function lastPitch(evs) {
+  let a = null
+  evs.forEach(e => { if (!e.r) a = e.p.i })
+  return a
+}
+
+function mutRhythm(p, c) {
+  const cand = []
+  for (let b = 0; b < p.nbars - 1; b++) if (b % 4 !== 3) cand.push(b)
+  if (!cand.length) return
+  const b = pick(cand)
+  const q = p.mel[b].filter(e => !e.r).map(e => e.p.i)
+  if (!q.length) return
+  const cell = pickCell(c, true)
+  const nn = cell.filter(x => !x[1]).length
+  const evs = []
+  let s = 0
+  let j = 0
+  cell.forEach(x => {
+    if (x[1]) {
+      evs.push({ s: s, d: x[0], r: 1, p: null })
+    } else {
+      const idx = nn > 1 ? Math.round(j * (q.length - 1) / (nn - 1)) : 0
+      evs.push({ s: s, d: x[0], r: 0, p: { i: q[Math.min(idx, q.length - 1)], alt: 0 } })
+      j++
+    }
+    s += x[0]
+  })
+  repairBar(c, evs, p.chords[b])
+  p.mel[b] = evs
+}
+
+function mutPitch(p, c) {
+  const cand = []
+  for (let b = 0; b < p.nbars - 1; b++) if (b % 4 !== 3) cand.push(b)
+  if (!cand.length) return
+  const b = pick(cand)
+  const idx = []
+  p.mel[b].forEach((e, j) => { if (!e.r) idx.push(j) })
+  if (!idx.length) return
+  const cnt = Math.random() < 0.5 ? 1 : 2
+  for (let t = 0; t < cnt; t++) {
+    const e = p.mel[b][pick(idx)]
+    e.p.i = fitI(c, e.p.i + (Math.random() < 0.7 ? pick([-1, 1]) : pick([-2, 2])))
+  }
+  repairBar(c, p.mel[b], p.chords[b])
+}
+
+function mutSeq(p, c) {
+  const cand = []
+  for (let b = 1; b < p.nbars - 1; b++) if (b % 4 === 1 || b % 4 === 2) cand.push(b)
+  if (!cand.length) return
+  const b = pick(cand)
+  p.mel[b] = seqBar(c, p.mel[b - 1], pick([-1, 1, 2]), p.chords[b])
+}
+
+function mutHarm(p, c) {
+  const nph = Math.floor(p.nbars / 4)
+  const pi = rint(0, nph - 1)
+  const fresh = harmonyFor(cur_key, p.form[pi].t, p.slots)
+  p.chords[pi * 4 + 1] = fresh[1]
+  p.chords[pi * 4 + 2] = fresh[2]
+  for (let b = pi * 4 + 1; b <= pi * 4 + 2; b++) repairBar(c, p.mel[b], p.chords[b])
+}
+
+function mutAcc(p, c) {
+  const nph = Math.floor(p.nbars / 4)
+  const pi = rint(0, nph - 1)
+  p.pats[pi] = pick(cur_style.bass)
+}
+
+function mutCad(p, c) {
+  const nph = Math.floor(p.nbars / 4)
+  const pi = rint(0, nph - 1)
+  const b = pi * 4 + 3
+  c.prev = lastPitch(p.mel[b - 1])
+  c.prev2 = null
+  p.mel[b] = cadenceBar(c, p.form[pi].t === 'con' ? 'con' : 'half', p.chords[b])
+}
+
+function mutatePiece(par) {
+  const p = JSON.parse(JSON.stringify(par))
+  p.st = par.st
+  const c = ctxFor(p)
+  const ops = [mutRhythm, mutPitch, mutPitch, mutSeq, mutHarm, mutAcc, mutCad]
+  const cnt = rint(2, 3)
+  for (let t = 0; t < cnt; t++) pick(ops)(p, c)
+  return finish(p)
+}
+
+function reg_piece(p) {
+  uid_n++
+  p.uid = 'u' + uid_n
+  reg[p.uid] = p
+  return p
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ENGRAVER
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const ln = (x1, y1, x2, y2, w) =>
+  '<line x1="' + r1(x1) + '" y1="' + r1(y1) + '" x2="' + r1(x2) + '" y2="' + r1(y2) + '" stroke="currentColor" stroke-width="' + r1(w) + '"/>'
+
+function sharpSvg(x, y, g) {
+  const a = g * 0.26
+  const w = Math.max(0.9, g * 0.1)
+  return '<g>' +
+    ln(x - a, y - 1.2 * g, x - a, y + 1.6 * g, w) +
+    ln(x + a, y - 1.6 * g, x + a, y + 1.2 * g, w) +
+    ln(x - 0.55 * g, y - 0.3 * g, x + 0.55 * g, y - 0.72 * g, g * 0.34) +
+    ln(x - 0.55 * g, y + 0.72 * g, x + 0.55 * g, y + 0.3 * g, g * 0.34) +
+    '</g>'
+}
+
+function flatSvg(x, y, g) {
+  const xs = x - 0.3 * g
+  const p = (dx, dy) => r1(xs + dx * g) + ' ' + r1(y + dy * g)
+  return '<g>' +
+    ln(xs, y - 1.85 * g, xs, y + 0.7 * g, Math.max(0.9, g * 0.11)) +
+    '<path d="M' + p(0, 0.7) + ' C' + p(1.0, 0.1) + ' ' + p(0.85, -0.95) + ' ' + p(0, -0.35) + '" fill="none" stroke="currentColor" stroke-width="' + r1(g * 0.26) + '"/>' +
+    '</g>'
+}
+
+function natSvg(x, y, g) {
+  const a = g * 0.26
+  const w = Math.max(0.9, g * 0.1)
+  return '<g>' +
+    ln(x - a, y - 1.4 * g, x - a, y + 0.6 * g, w) +
+    ln(x + a, y - 0.6 * g, x + a, y + 1.4 * g, w) +
+    ln(x - a, y - 0.2 * g, x + a, y - 0.5 * g, g * 0.3) +
+    ln(x - a, y + 0.5 * g, x + a, y + 0.2 * g, g * 0.3) +
+    '</g>'
+}
+
+function dsharpSvg(x, y, g) {
+  const a = g * 0.42
+  return '<g>' + ln(x - a, y - a, x + a, y + a, g * 0.3) + ln(x - a, y + a, x + a, y - a, g * 0.3) + '</g>'
+}
+
+function accSvg(acc, x, y, g) {
+  switch(acc) {
+    case 2:  return dsharpSvg(x, y, g)
+    case 1:  return sharpSvg(x, y, g)
+    case -1: return flatSvg(x, y, g)
+    default: return natSvg(x, y, g)
+  }
+}
+
+function qrest(cx, cy, g) {
+  const p = (x, y) => r1(cx + x * g) + ' ' + r1(cy + y * g)
+  return '<path d="M' + p(-0.3, -1.45) + ' L' + p(0.45, -0.7) + ' L' + p(-0.35, 0.2) + ' L' + p(0.3, 1.0) +
+    ' C' + p(-0.6, 0.75) + ' ' + p(-0.8, 1.6) + ' ' + p(0.05, 1.7) +
+    '" fill="none" stroke="currentColor" stroke-width="' + r1(g * 0.42) + '" stroke-linejoin="round" stroke-linecap="round"/>'
+}
+
+function erest(cx, cy, g) {
+  const p = (x, y) => r1(cx + x * g) + ' ' + r1(cy + y * g)
+  return '<circle cx="' + r1(cx - 0.25 * g) + '" cy="' + r1(cy - 0.4 * g) + '" r="' + r1(g * 0.3) + '" fill="currentColor"/>' +
+    '<path d="M' + p(-0.2, -0.45) + ' Q' + p(0.25, -0.75) + ' ' + p(0.55, -0.7) + ' L' + p(-0.1, 1.05) +
+    '" fill="none" stroke="currentColor" stroke-width="' + r1(g * 0.2) + '" stroke-linecap="round"/>'
+}
+
+function restSvg(dur, cx, yT, g, whole) {
+  const rw = g * 1.15
+  const rh = g * 0.5
+  let s = ''
+  if (whole) {
+    return '<rect x="' + r1(cx - rw / 2) + '" y="' + r1(yT + g) + '" width="' + r1(rw) + '" height="' + r1(rh) + '" fill="currentColor"/>'
+  }
+  switch(dur) {
+    case 8:
+      s = '<rect x="' + r1(cx - rw / 2) + '" y="' + r1(yT + g) + '" width="' + r1(rw) + '" height="' + r1(rh) + '" fill="currentColor"/>'
+      break
+    case 6:
+    case 4:
+      s = '<rect x="' + r1(cx - rw / 2) + '" y="' + r1(yT + 2 * g - rh) + '" width="' + r1(rw) + '" height="' + r1(rh) + '" fill="currentColor"/>'
+      if (dur === 6) s += '<circle cx="' + r1(cx + rw / 2 + g * 0.45) + '" cy="' + r1(yT + 1.5 * g) + '" r="' + r1(g * 0.16) + '" fill="currentColor"/>'
+      break
+    case 3:
+    case 2:
+      s = qrest(cx, yT + 2 * g, g)
+      if (dur === 3) s += '<circle cx="' + r1(cx + g * 0.9) + '" cy="' + r1(yT + 1.6 * g) + '" r="' + r1(g * 0.16) + '" fill="currentColor"/>'
+      break
+    default:
+      s = erest(cx, yT + 2 * g, g)
+      break
+  }
+  return s
+}
+
+function ledgers(cx, dn, bdn, yOf, g) {
+  let s = ''
+  const hw = g * 0.95
+  for (let L = bdn - 2; L >= dn; L -= 2) s += ln(cx - hw, yOf(L), cx + hw, yOf(L), 1.1)
+  for (let L = bdn + 10; L <= dn; L += 2) s += ln(cx - hw, yOf(L), cx + hw, yOf(L), 1.1)
+  return s
+}
+
+function clefSvg(kind, x, yRef, g) {
+  if (clef_ok && CM) {
+    const m = kind === 'g' ? CM.g : CM.f
+    const th = kind === 'g' ? 7.02 * g : 4.4 * g
+    const top = kind === 'g' ? yRef - 4.392 * g : yRef - 0.784 * g
+    const s = th / (m.asc + m.desc)
+    return '<text x="' + r1(x + m.left * s) + '" y="' + r1(top + m.asc * s) + '" font-size="' + r1(100 * s) +
+      '" font-family="' + CLEF_FONT.replace(/\'/g, '') + '" fill="currentColor">' + (kind === 'g' ? '\u{1D11E}' : '\u{1D122}') + '</text>'
+  }
+  const ch = kind === 'g' ? 'G' : 'F'
+  return '<text x="' + r1(x + g * 0.2) + '" y="' + r1(yRef + g * 0.9) + '" font-size="' + r1(g * 3) +
+    '" font-family="Georgia, serif" font-style="italic" font-weight="700" fill="currentColor">' + ch + '</text>'
+}
+
+function ksSvg(k, x, g, yOf, sharps, flats) {
+  let s = ''
+  const dns = k.ks.t === '#' ? sharps : flats
+  for (let j = 0; j < k.ks.n; j++) {
+    const xx = x + j * g * 1.4 + g * 0.5
+    const y = yOf(dns[j])
+    s += k.ks.t === '#' ? sharpSvg(xx, y, g) : flatSvg(xx, y, g)
+  }
+  return s
+}
+
+function braceSvg(xr, y1, y2, g) {
+  const h = y2 - y1
+  const p = (dx, dy) => r1(xr + dx * g) + ' ' + r1(y1 + dy * h)
+  return '<path d="M' + p(0, 0) + ' C' + p(-1.9, 0.16) + ' ' + p(-0.3, 0.38) + ' ' + p(-1.6, 0.5) +
+    ' C' + p(-0.3, 0.62) + ' ' + p(-1.9, 0.84) + ' ' + p(0, 1) +
+    '" fill="none" stroke="currentColor" stroke-width="' + r1(g * 0.3) + '" stroke-linecap="round"/>'
+}
+
+// which eighth notes get beamed together
+function beamGroups(evs, slots) {
+  const e8 = {}
+  evs.forEach((e, n) => { if (!e.r && e.d === 1) e8[e.s] = n })
+  const used = {}
+  const groups = []
+  if (slots === 8) {
+    [0, 4].forEach(w => {
+      if (e8[w] !== undefined && e8[w + 1] !== undefined && e8[w + 2] !== undefined && e8[w + 3] !== undefined) {
+        groups.push([e8[w], e8[w + 1], e8[w + 2], e8[w + 3]])
+        for (let j = 0; j < 4; j++) used[w + j] = 1
+      }
+    })
+  }
+  for (let b = 0; b < slots / 2; b++) {
+    const s0 = b * 2
+    if (e8[s0] !== undefined && e8[s0 + 1] !== undefined && !used[s0] && !used[s0 + 1]) {
+      groups.push([e8[s0], e8[s0 + 1]])
+      used[s0] = 1
+      used[s0 + 1] = 1
+    }
+  }
+  return groups
+}
+
+// draw one staff's worth of one bar
+function staffBar(out, evs, c) {
+  const g = c.g
+  const rx = g * 0.62
+  const ry = g * 0.47
+  const slots = c.slots
+  const bx = s => c.mx + c.padL + (s + 0.5) / slots * c.iw
+  const yOf = c.yOf
+  const midY = yOf(c.mid)
+  const mem = {}
+
+  const info = evs.map(e => {
+    if (e.r) return null
+    const ps = e.ps ? e.ps : [e.p]
+    const sp = ps.map(q => {
+      const s = spellI(c.k, q.i)
+      return { dn: s.dn, letter: s.letter, acc: s.acc + (q.alt || 0) }
+    }).sort((a, b) => a.dn - b.dn)
+    const lo = sp[0].dn
+    const hi = sp[sp.length - 1].dn
+    const ext = (hi - c.mid) + (lo - c.mid)
+    return { sp: sp, cx: bx(e.s), ext: ext, up: ext < 0, yLo: yOf(lo), yHi: yOf(hi) }
+  })
+
+  // stems and beams
+  const groups = beamGroups(evs, slots)
+  const grouped = {}
+  groups.forEach(gr => {
+    let sum = 0
+    gr.forEach(n => { sum += info[n].ext })
+    gr.forEach(n => { info[n].up = sum < 0; grouped[n] = 1 })
+  })
+
+  info.forEach(f => {
+    if (!f) return
+    f.sx = f.up ? f.cx + rx * 0.92 : f.cx - rx * 0.92
+    f.y0 = f.up ? f.yLo : f.yHi
+    f.tip = f.up ? Math.min(f.yHi - 3.4 * g, midY) : Math.max(f.yLo + 3.4 * g, midY)
+  })
+
+  const beams = []
+  groups.forEach(gr => {
+    const fm = info[gr[0]]
+    const lm = info[gr[gr.length - 1]]
+    const up = fm.up
+    const dy = clamp(lm.tip - fm.tip, -1.3 * g, 1.3 * g)
+    const yAt = x => fm.tip + dy * (x - fm.sx) / (lm.sx - fm.sx)
+    let shift = 0
+    gr.forEach(n => {
+      const m = info[n]
+      const yb = yAt(m.sx)
+      if (up) shift = Math.min(shift, (m.yHi - 2.6 * g) - yb)
+      else shift = Math.max(shift, (m.yLo + 2.6 * g) - yb)
+    })
+    gr.forEach(n => { info[n].tip = yAt(info[n].sx) + shift })
+    const t = g * 0.5
+    const x1 = fm.sx
+    const x2 = lm.sx
+    const y1 = fm.tip
+    const y2 = lm.tip
+    const o = up ? t : -t
+    beams.push('<polygon points="' + r1(x1) + ',' + r1(y1) + ' ' + r1(x2) + ',' + r1(y2) + ' ' + r1(x2) + ',' + r1(y2 + o) + ' ' + r1(x1) + ',' + r1(y1 + o) + '" fill="currentColor"/>')
+  })
+
+  // notes and rests
+  evs.forEach((e, n) => {
+    const id = c.pre + c.bar + '_' + e.s
+    if (e.r) {
+      const whole = e.d === slots
+      out.push(restSvg(e.d, whole ? c.mx + c.mws / 2 : bx(e.s) + (e.d - 1) * c.iw / (2 * slots), c.yTop, g, whole))
+      return
+    }
+    const f = info[n]
+    let p = ''
+
+    // accidentals (bar memory)
+    let stack = 0
+    for (let j = f.sp.length - 1; j >= 0; j--) {
+      const q = f.sp[j]
+      const cur = mem[q.dn] !== undefined ? mem[q.dn] : c.k.by_letter[q.letter]
+      if (q.acc !== cur) {
+        out.push(accSvg(q.acc, f.cx - 1.75 * g - stack * 1.25 * g, yOf(q.dn), g))
+        mem[q.dn] = q.acc
+        stack++
+      }
+    }
+
+    f.sp.forEach(q => {
+      const y = yOf(q.dn)
+      out.push(ledgers(f.cx, q.dn, c.bdn, yOf, g))
+      if (e.d === 8) {
+        p += '<ellipse class="h" cx="' + r1(f.cx) + '" cy="' + r1(y) + '" rx="' + r1(g * 0.72) + '" ry="' + r1(g * 0.5) + '" stroke-width="' + r1(g * 0.22) + '"/>'
+      } else {
+        p += '<ellipse class="' + (e.d >= 4 && e.d !== 3 ? 'h' : 'f') + '" cx="' + r1(f.cx) + '" cy="' + r1(y) + '" rx="' + r1(rx) + '" ry="' + r1(ry) +
+          '" transform="rotate(-22 ' + r1(f.cx) + ' ' + r1(y) + ')" stroke-width="' + r1(g * 0.16) + '"/>'
+      }
+      if (e.d === 3 || e.d === 6) {
+        const on_line = ((q.dn - c.bdn) % 2 + 2) % 2 === 0
+        p += '<circle class="f" cx="' + r1(f.cx + rx + g * 0.5) + '" cy="' + r1(on_line ? y - g / 2 : y) + '" r="' + r1(g * 0.16) + '"/>'
+      }
+    })
+
+    if (e.d !== 8) {
+      p += '<line class="s" x1="' + r1(f.sx) + '" y1="' + r1(f.y0) + '" x2="' + r1(f.sx) + '" y2="' + r1(f.tip) + '" stroke-width="' + r1(Math.max(1, g * 0.11)) + '"/>'
+      if (e.d === 1 && !grouped[n]) {
+        const dir = f.up ? 1 : -1
+        const pp = (dx, dy) => r1(f.sx + dx * g) + ' ' + r1(f.tip + dir * dy * g)
+        p += '<path class="f" d="M' + pp(0, 0) + ' C' + pp(0.35, 1.0) + ' ' + pp(1.45, 1.2) + ' ' + pp(1.1, 2.8) +
+          ' C' + pp(1.25, 1.8) + ' ' + pp(0.5, 1.6) + ' ' + pp(0, 1.15) + ' Z"/>'
+      }
+    }
+
+    out.push('<g class="nt" id="' + id + '">' + p + '</g>')
+  })
+
+  beams.forEach(b => out.push(b))
+}
+
+function tempoWord(t) {
+  if (t < 60) return 'Largo'
+  if (t < 76) return 'Adagio'
+  if (t < 108) return 'Andante'
+  if (t < 121) return 'Moderato'
+  if (t < 156) return 'Allegro'
+  if (t < 200) return 'Vivace'
+  return 'Presto'
+}
+
+function engrave(m, k, o) {
+  const g = o.g
+  const W = o.W
+  const two = o.harm
+  const slots = m.slots
+  const nb = m.nbars
+  const nks = k.ks.n
+
+  const lp = g * 3.6
+  const clefW = g * 3.9
+  const ksW = nks ? nks * g * 1.4 + g * 0.5 : 0
+  const tsW = g * 2.8
+  const xs0 = lp
+  const xs1 = W - g
+  const m0a = xs0 + clefW + ksW + tsW + g * 0.3
+  const m0b = xs0 + clefW + ksW + g * 0.3
+  const mwMin = g * (slots === 8 ? 14 : 11)
+  const n1 = Math.min(4, Math.max(1, Math.floor((xs1 - m0a) / mwMin)))
+  const n2 = Math.min(4, Math.max(1, Math.floor((xs1 - m0b) / mwMin)))
+  const nshow = o.maxsys ? Math.min(nb, n1) : nb
+  const sysList = []
+  for (let bp = 0; bp < nshow; ) {
+    const n = sysList.length === 0 ? n1 : n2
+    sysList.push([bp, Math.min(nshow, bp + n), n])
+    bp += n
+  }
+  const nsys = sysList.length
+
+  const top0 = g * 3.4
+  const ledA = g * 3
+  const gapSt = g * 7
+  const ledB = g * 3
+  const sysGap = g * 2.5
+  const sysH = ledA + 4 * g + (two ? gapSt + 4 * g : 0) + ledB
+  const H = top0 + nsys * sysH + (nsys - 1) * sysGap + g * 0.5
+
+  const out = []
+  const padL = g * 2.0
+  const padR = g * 0.6
+
+  for (let s = 0; s < nsys; s++) {
+    const first = s === 0
+    const b0 = sysList[s][0]
+    const b1 = sysList[s][1]
+    const nper = sysList[s][2]
+    const cnt = b1 - b0
+    const m0 = first ? m0a : m0b
+    const mws = (xs1 - m0) / nper
+    const xe = m0 + cnt * mws
+    const yT = top0 + s * (sysH + sysGap) + ledA
+    const yB = yT + 4 * g + gapSt
+    const yBot = two ? yB + 4 * g : yT + 4 * g
+    const yTr = dn => yT + 4 * g - (dn - 30) * g / 2
+    const yBs = dn => yB + 4 * g - (dn - 18) * g / 2
+
+    for (let j = 0; j < 5; j++) {
+      out.push(ln(xs0, yT + j * g, xe, yT + j * g, 1))
+      if (two) out.push(ln(xs0, yB + j * g, xe, yB + j * g, 1))
+    }
+
+    out.push(ln(xs0, yT, xs0, yBot, 1.3))
+    if (two) out.push(braceSvg(xs0 - g * 0.5, yT, yBot, g))
+
+    out.push(clefSvg('g', xs0 + g * 0.5, yT + 3 * g, g))
+    if (two) out.push(clefSvg('f', xs0 + g * 0.5, yB + 1 * g, g))
+
+    out.push(ksSvg(k, xs0 + clefW, g, yTr, TREB_SHARP, TREB_FLAT))
+    if (two) out.push(ksSvg(k, xs0 + clefW, g, yBs, BASS_SHARP, BASS_FLAT))
+
+    if (first) {
+      const tx = xs0 + clefW + ksW + tsW / 2
+      const fs = r1(g * 2.9)
+      const ts = (y, d) => '<text x="' + r1(tx) + '" y="' + r1(y) + '" font-size="' + fs + '" text-anchor="middle" font-family="Georgia, \'Times New Roman\', serif" font-weight="700" fill="currentColor">' + d + '</text>'
+      out.push(ts(yT + 2 * g, m.beats) + ts(yT + 4 * g, 4))
+      if (two) out.push(ts(yB + 2 * g, m.beats) + ts(yB + 4 * g, 4))
+
+      const word = tempoWord(o.tempo)
+      const wfs = g * 1.55
+      out.push('<text x="' + r1(m0a) + '" y="' + r1(yT - 1.7 * g) + '" font-size="' + r1(wfs) + '" font-weight="700" font-style="italic" font-family="Georgia, \'Times New Roman\', serif" fill="currentColor">' + word + '</text>')
+      const nx = m0a + word.length * wfs * 0.52 + g * 1.4
+      const ny = yT - 1.7 * g
+      out.push('<ellipse cx="' + r1(nx) + '" cy="' + r1(ny) + '" rx="' + r1(g * 0.5) + '" ry="' + r1(g * 0.38) + '" transform="rotate(-22 ' + r1(nx) + ' ' + r1(ny) + ')" fill="currentColor"/>')
+      out.push(ln(nx + g * 0.45, ny, nx + g * 0.45, ny - g * 2.1, Math.max(1, g * 0.1)))
+      out.push('<text x="' + r1(nx + g * 1.1) + '" y="' + r1(yT - 1.7 * g) + '" font-size="' + r1(wfs) + '" font-family="Georgia, \'Times New Roman\', serif" fill="currentColor">= ' + o.tempo + '</text>')
+    } else {
+      out.push('<text x="' + r1(m0b + 2) + '" y="' + r1(yT - 0.9 * g) + '" font-size="' + r1(g * 1.05) + '" font-style="italic" font-family="Georgia, serif" fill="currentColor">' + (b0 + 1) + '</text>')
+    }
+
+    for (let b = b0; b < b1; b++) {
+      const mx = m0 + (b - b0) * mws
+      const iw = mws - padL - padR
+      const base = { g: g, k: k, slots: slots, mx: mx, mws: mws, padL: padL, iw: iw, bar: b }
+
+      staffBar(out, m.mel[b], Object.assign({ yOf: yTr, mid: 34, bdn: 30, yTop: yT, pre: m.uid + '_m' }, base))
+      if (two) staffBar(out, m.acc[b], Object.assign({ yOf: yBs, mid: 22, bdn: 18, yTop: yB, pre: m.uid + '_a' }, base))
+
+      const xr = mx + mws
+      if (b === nb - 1 && o.full) {
+        out.push(ln(xr - g * 0.55, yT, xr - g * 0.55, yBot, 1.1))
+        out.push(ln(xr - g * 0.1, yT, xr - g * 0.1, yBot, g * 0.38))
+      } else {
+        out.push(ln(xr, yT, xr, yBot, 1.1))
+      }
+    }
+  }
+
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + r1(W) + ' ' + r1(H) + '" width="' + r1(W) + '" height="' + r1(H) + '" role="img" aria-label="Sheet music">' +
+    out.join('') + '</svg>'
+  return { svg: svg, shown: nshow, total: nb }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AUDIO  (piano / flute / music box, phrase shaped dynamics, slowing at cadences)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+let ac = null
+let master = null
+let rev_in = null
+let bus = null
+let noise_buf = null
+let noise_long = null
+let play = null
+let acc_sel = 'auto'
+let drum_sel = 'auto'
+let dlApi = null
+let final_uid = null
+
+function makeIR(sec) {
+  const n = Math.floor(ac.sampleRate * sec)
+  const b = ac.createBuffer(2, n, ac.sampleRate)
+  for (let c = 0; c < 2; c++) {
+    const d = b.getChannelData(c)
+    let lp = 0
+    for (let i = 0; i < n; i++) {
+      const t = i / ac.sampleRate
+      const w = Math.random() * 2 - 1
+      lp += (w - lp) * (0.35 * Math.exp(-t * 1.2) + 0.05)
+      d[i] = lp * 3 * Math.exp(-t * 2.6) * (i < 200 ? i / 200 : 1)
+    }
+  }
+  return b
+}
+
+function initAudio() {
+  if (ac) return
+  ac = new (window.AudioContext || window.webkitAudioContext)()
+
+  master = ac.createGain()
+  master.gain.value = 0.9
+
+  const comp = ac.createDynamicsCompressor()
+  comp.threshold.value = -16
+  comp.knee.value = 18
+  comp.ratio.value = 3.5
+  comp.attack.value = 0.004
+  comp.release.value = 0.25
+  master.connect(comp)
+  comp.connect(ac.destination)
+
+  const conv = ac.createConvolver()
+  conv.buffer = makeIR(2.4)
+  rev_in = ac.createGain()
+  rev_in.gain.value = 0.26
+  rev_in.connect(conv)
+  conv.connect(comp)
+
+  noise_buf = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.06), ac.sampleRate)
+  const nd = noise_buf.getChannelData(0)
+  for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1
+
+  noise_long = ac.createBuffer(1, Math.floor(ac.sampleRate * 1.7), ac.sampleRate)
+  const nl = noise_long.getChannelData(0)
+  for (let i = 0; i < nl.length; i++) nl[i] = Math.random() * 2 - 1
+}
+
+const PARTIALS = [1, 0.58, 0.34, 0.26, 0.14, 0.09, 0.05]
+
+function pianoNote(midi, t, dur, vel, is_chord) {
+  const f0 = 440 * Math.pow(2, (midi - 69) / 12)
+  const tau0 = 0.35 + 3.2 * Math.exp(-(midi - 36) / 22)
+  const B = 0.00012 * Math.pow(f0 / 261, 2)
+
+  const ng = ac.createGain()
+  const rel = is_chord ? 0.22 : 0.1
+  ng.gain.setValueAtTime(1, t)
+  ng.gain.setValueAtTime(1, t + dur)
+  ng.gain.setTargetAtTime(0, t + dur, rel)
+
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 0.5
+  lp.frequency.setValueAtTime(Math.min(11000, f0 * (5 + 10 * vel)), t)
+  lp.frequency.setTargetAtTime(Math.max(900, f0 * 2.6), t, 0.5)
+
+  lp.connect(ng)
+  ng.connect(bus)
+
+  const stop_at = t + dur + rel * 8 + 0.1
+  const level = 0.1 * vel
+
+  for (let n = 1; n <= PARTIALS.length; n++) {
+    const fn = n * f0 * Math.sqrt(1 + B * n * n)
+    if (fn > 12000) break
+
+    const tau = tau0 / (1 + 1.2 * (n - 1))
+    const copies = n <= 2 ? [-1.2, 1.2] : [0]
+
+    copies.forEach(det => {
+      const o = ac.createOscillator()
+      const og = ac.createGain()
+      o.type = 'sine'
+      o.frequency.setValueAtTime(fn, t)
+      o.detune.value = det
+      og.gain.setValueAtTime(0, t)
+      og.gain.linearRampToValueAtTime(level * PARTIALS[n - 1] / copies.length, t + 0.004)
+      og.gain.setTargetAtTime(0, t + 0.004, tau)
+      o.connect(og)
+      og.connect(lp)
+      o.start(t)
+      o.stop(stop_at)
+    })
+  }
+
+  const src = ac.createBufferSource()
+  src.buffer = noise_buf
+  const bp = ac.createBiquadFilter()
+  bp.type = 'bandpass'
+  bp.frequency.value = Math.min(3500, f0 * 4)
+  bp.Q.value = 0.8
+  const hg = ac.createGain()
+  hg.gain.setValueAtTime(0, t)
+  hg.gain.linearRampToValueAtTime(vel * 0.07, t + 0.002)
+  hg.gain.setTargetAtTime(0, t + 0.002, 0.018)
+  src.connect(bp)
+  bp.connect(hg)
+  hg.connect(ng)
+  src.start(t)
+  src.stop(t + 0.06)
+}
+
+function fluteNote(midi, t, dur, vel) {
+  const f0 = 440 * Math.pow(2, (midi - 69) / 12)
+  const pk = 0.2 * vel
+  const ng = ac.createGain()
+  ng.gain.setValueAtTime(0, t)
+  ng.gain.linearRampToValueAtTime(pk, t + 0.07)
+  const hold = t + Math.max(0.08, dur)
+  ng.gain.setValueAtTime(pk * 0.9, hold)
+  ng.gain.setTargetAtTime(0, hold, 0.09)
+
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.frequency.value = Math.min(6000, f0 * 6)
+  lp.Q.value = 0.3
+  lp.connect(ng)
+  ng.connect(bus)
+
+  const stop_at = t + dur + 0.9
+
+  const lfo = ac.createOscillator()
+  lfo.frequency.value = 5.1
+  const lg = ac.createGain()
+  lg.gain.setValueAtTime(0, t)
+  lg.gain.linearRampToValueAtTime(7, t + 0.3)
+  lfo.connect(lg)
+  lfo.start(t)
+  lfo.stop(stop_at)
+
+  const parts = [[1, 'triangle', 1], [2, 'sine', 0.22], [3, 'sine', 0.06]]
+  parts.forEach(x => {
+    const o = ac.createOscillator()
+    o.type = x[1]
+    o.frequency.setValueAtTime(f0 * x[0], t)
+    const og = ac.createGain()
+    og.gain.value = x[2]
+    lg.connect(o.detune)
+    o.connect(og)
+    og.connect(lp)
+    o.start(t)
+    o.stop(stop_at)
+  })
+
+  const src = ac.createBufferSource()
+  src.buffer = noise_buf
+  src.loop = true
+  const bp = ac.createBiquadFilter()
+  bp.type = 'bandpass'
+  bp.frequency.value = Math.min(5000, f0 * 3)
+  bp.Q.value = 1.2
+  const bgn = ac.createGain()
+  bgn.gain.value = 0.07
+  src.connect(bp)
+  bp.connect(bgn)
+  bgn.connect(lp)
+  src.start(t)
+  src.stop(stop_at)
+}
+
+function boxNote(midi, t, dur, vel) {
+  const f0 = 440 * Math.pow(2, (midi - 69) / 12)
+  const scale = 1.7 * Math.exp(-(midi - 60) / 40)
+  const parts = [[1, 1, 1.0], [2.76, 0.38, 0.55], [5.4, 0.14, 0.3], [8.9, 0.05, 0.18]]
+  parts.forEach(x => {
+    const fn = f0 * x[0]
+    if (fn > 12000) return
+    const tau = x[2] * scale
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = 'sine'
+    o.frequency.setValueAtTime(fn, t)
+    og.gain.setValueAtTime(0, t)
+    og.gain.linearRampToValueAtTime(0.13 * vel * x[1], t + 0.002)
+    og.gain.setTargetAtTime(0, t + 0.002, tau)
+    o.connect(og)
+    og.connect(bus)
+    o.start(t)
+    o.stop(t + tau * 7 + 0.1)
+  })
+}
+
+// loudness balance, measured by rendering every instrument offline (all land at about -24 dB)
+const TRIM = {"piano": 1.24, "flute": 0.72, "music box": 0.72, "strings": 1.82, "organ": 1.57, "harp": 0.9, "guitar": 0.98, "marimba": 0.75, "bell": 0.51, "synth lead": 1.07, "chiptune": 2.82, "brass": 1.36, "clarinet": 0.79, "synth pad": 1.72, "kick": 0.55, "snare": 0.68, "hat": 0.48, "crash": 0.44}
+
+// ─── more instruments ────────────────────────────────────────────────────────
+
+// attack, decay, sustain, release shape. Returns the time the note can be switched off.
+function adsr(g, t, dur, a, d, s, r, peak) {
+  const hold = Math.max(t + a + d, t + dur)
+  const sus = Math.max(0.0001, peak * s)
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.linearRampToValueAtTime(peak, t + a)
+  g.gain.linearRampToValueAtTime(sus, t + a + d)
+  g.gain.setValueAtTime(sus, hold)
+  g.gain.setTargetAtTime(0, hold, r / 3)
+  return hold + r + 0.08
+}
+
+function addVibrato(oscs, t, stop, depth, delay) {
+  const lfo = ac.createOscillator()
+  lfo.frequency.value = 5.3
+  const lg = ac.createGain()
+  lg.gain.setValueAtTime(0, t)
+  lg.gain.linearRampToValueAtTime(depth, t + delay + 0.25)
+  lfo.connect(lg)
+  oscs.forEach(o => lg.connect(o.detune))
+  lfo.start(t)
+  lfo.stop(stop)
+}
+
+function freqOf(midi) { return 440 * Math.pow(2, (midi - 69) / 12) }
+
+function stringsNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.frequency.value = Math.min(5000, f * 4 + 700)
+  lp.Q.value = 0.4
+  const stop = adsr(g, t, dur, 0.12, 0.15, 0.85, 0.3, 0.07 * vel)
+  lp.connect(g)
+  g.connect(bus)
+  const oscs = []
+  const dets = [-8, 8]
+  dets.forEach(c => {
+    const o = ac.createOscillator()
+    o.type = 'sawtooth'
+    o.frequency.setValueAtTime(f, t)
+    o.detune.value = c
+    o.connect(lp)
+    o.start(t)
+    o.stop(stop)
+    oscs.push(o)
+  })
+  addVibrato(oscs, t, stop, 7, 0.1)
+}
+
+function organNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const stop = adsr(g, t, dur, 0.012, 0.02, 1, 0.07, 0.16 * vel)
+  g.connect(bus)
+  const ratios = [1, 2, 3, 4, 6, 8]
+  const amps = [1, 0.7, 0.45, 0.35, 0.2, 0.12]
+  const tot = 2.82
+  ratios.forEach((r, j) => {
+    if (f * r > 11000) return
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = 'sine'
+    o.frequency.setValueAtTime(f * r, t)
+    og.gain.value = amps[j] / tot
+    o.connect(og)
+    og.connect(g)
+    o.start(t)
+    o.stop(stop)
+  })
+}
+
+function harpNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const sc_ = 0.6 + 1.4 * Math.exp(-(midi - 48) / 20)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 0.5
+  lp.frequency.setValueAtTime(Math.min(9000, f * 9), t)
+  lp.frequency.setTargetAtTime(Math.max(700, f * 2), t, 0.25)
+  const rel = t + Math.max(0.3, dur) + 0.3
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.linearRampToValueAtTime(0.2 * vel, t + 0.003)
+  g.gain.setValueAtTime(0.2 * vel, rel)
+  g.gain.setTargetAtTime(0, rel, 0.2)
+  lp.connect(g)
+  g.connect(bus)
+  const ratios = [1, 2, 3, 4]
+  const amps = [1, 0.55, 0.28, 0.14]
+  const taus = [1.2, 0.7, 0.4, 0.25]
+  const stop = t + Math.max(0.3, dur) + 1.6
+  ratios.forEach((r, j) => {
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = j === 0 ? 'triangle' : 'sine'
+    o.frequency.setValueAtTime(f * r, t)
+    og.gain.setValueAtTime(amps[j] / 1.6, t)
+    og.gain.setTargetAtTime(0, t + 0.003, taus[j] * sc_)
+    o.connect(og)
+    og.connect(lp)
+    o.start(t)
+    o.stop(stop)
+  })
+}
+
+function guitarNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const sc_ = 0.5 + 1.0 * Math.exp(-(midi - 45) / 20)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 0.8
+  lp.frequency.setValueAtTime(Math.min(6000, f * 7), t)
+  lp.frequency.setTargetAtTime(Math.max(500, f * 1.8), t, 0.18)
+  const rel = t + Math.max(0.25, dur)
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.linearRampToValueAtTime(0.22 * vel, t + 0.002)
+  g.gain.setValueAtTime(0.22 * vel, rel)
+  g.gain.setTargetAtTime(0, rel, 0.18)
+  lp.connect(g)
+  g.connect(bus)
+  const stop = t + Math.max(0.25, dur) + 1.4
+  const ratios = [1, 2, 3]
+  const amps = [1, 0.4, 0.2]
+  ratios.forEach((r, j) => {
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = j === 0 ? 'triangle' : 'sine'
+    o.frequency.setValueAtTime(f * r, t)
+    og.gain.setValueAtTime(amps[j] / 1.4, t)
+    og.gain.setTargetAtTime(0, t + 0.002, (0.9 - j * 0.25) * sc_)
+    o.connect(og)
+    og.connect(lp)
+    o.start(t)
+    o.stop(stop)
+  })
+}
+
+function marimbaNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const sc_ = 0.4 + 1.4 * Math.exp(-(midi - 48) / 30)
+  const stop = t + sc_ * 2.2 + 0.2
+  const parts = [[1, 1, 0.35], [3.9, 0.35, 0.08]]
+  parts.forEach(p => {
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = 'sine'
+    o.frequency.setValueAtTime(f * p[0], t)
+    og.gain.setValueAtTime(0.0001, t)
+    og.gain.linearRampToValueAtTime(0.22 * vel * p[1], t + 0.002)
+    og.gain.setTargetAtTime(0, t + 0.002, p[2] * sc_)
+    o.connect(og)
+    og.connect(bus)
+    o.start(t)
+    o.stop(stop)
+  })
+  const src = ac.createBufferSource()
+  src.buffer = noise_buf
+  const bp = ac.createBiquadFilter()
+  bp.type = 'bandpass'
+  bp.frequency.value = Math.min(4000, f * 3)
+  bp.Q.value = 1
+  const hg = ac.createGain()
+  hg.gain.setValueAtTime(vel * 0.05, t)
+  hg.gain.setTargetAtTime(0, t, 0.01)
+  src.connect(bp)
+  bp.connect(hg)
+  hg.connect(bus)
+  src.start(t)
+  src.stop(t + 0.05)
+}
+
+function bellNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const sc_ = 1.5 * Math.exp(-(midi - 60) / 45)
+  const ratios = [1, 2.4, 4.7, 7.2]
+  const amps = [1, 0.55, 0.28, 0.14]
+  const taus = [1.8, 1.0, 0.55, 0.3]
+  ratios.forEach((r, j) => {
+    const fn = f * r
+    if (fn > 12000) return
+    const o = ac.createOscillator()
+    const og = ac.createGain()
+    o.type = 'sine'
+    o.frequency.setValueAtTime(fn, t)
+    og.gain.setValueAtTime(0.0001, t)
+    og.gain.linearRampToValueAtTime(0.15 * vel * amps[j], t + 0.002)
+    og.gain.setTargetAtTime(0, t + 0.002, taus[j] * sc_)
+    o.connect(og)
+    og.connect(bus)
+    o.start(t)
+    o.stop(t + taus[j] * sc_ * 7 + 0.1)
+  })
+}
+
+function synthLeadNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 4
+  lp.frequency.setValueAtTime(Math.min(8000, f * 10), t)
+  lp.frequency.setTargetAtTime(f * 3 + 400, t, 0.12)
+  const stop = adsr(g, t, dur, 0.01, 0.12, 0.65, 0.14, 0.09 * vel)
+  lp.connect(g)
+  g.connect(bus)
+  const oscs = []
+  const defs = [['sawtooth', -6], ['square', 6]]
+  defs.forEach(x => {
+    const o = ac.createOscillator()
+    o.type = x[0]
+    o.frequency.setValueAtTime(f, t)
+    o.detune.value = x[1]
+    o.connect(lp)
+    o.start(t)
+    o.stop(stop)
+    oscs.push(o)
+  })
+  addVibrato(oscs, t, stop, 8, 0.15)
+}
+
+let pulse_wave = null
+function pulseWave() {
+  if (pulse_wave) return pulse_wave
+  const n = 48
+  const re = new Float32Array(n + 1)
+  const im = new Float32Array(n + 1)
+  const duty = 0.25
+  for (let k = 1; k <= n; k++) re[k] = (2 / (k * Math.PI)) * Math.sin(k * Math.PI * duty)
+  pulse_wave = ac.createPeriodicWave(re, im)
+  return pulse_wave
+}
+
+function chipNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const stop = adsr(g, t, dur, 0.004, 0.06, 0.55, 0.05, 0.1 * vel)
+  g.connect(bus)
+  const o = ac.createOscillator()
+  o.setPeriodicWave(pulseWave())
+  o.frequency.setValueAtTime(f, t)
+  o.connect(g)
+  o.start(t)
+  o.stop(stop)
+}
+
+function brassNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 1
+  lp.frequency.setValueAtTime(f * 1.5 + 200, t)
+  lp.frequency.linearRampToValueAtTime(Math.min(4500, f * 7 + 400), t + 0.08)
+  lp.frequency.setTargetAtTime(f * 3.5 + 300, t + 0.08, 0.2)
+  const stop = adsr(g, t, dur, 0.045, 0.1, 0.8, 0.1, 0.1 * vel)
+  lp.connect(g)
+  g.connect(bus)
+  const dets = [-5, 5]
+  dets.forEach(c => {
+    const o = ac.createOscillator()
+    o.type = 'sawtooth'
+    o.frequency.setValueAtTime(f, t)
+    o.detune.value = c
+    o.connect(lp)
+    o.start(t)
+    o.stop(stop)
+  })
+}
+
+function clarinetNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 0.5
+  lp.frequency.value = Math.min(3000, f * 5 + 500)
+  const stop = adsr(g, t, dur, 0.035, 0.05, 0.9, 0.08, 0.12 * vel)
+  lp.connect(g)
+  g.connect(bus)
+  const o = ac.createOscillator()
+  o.type = 'square'
+  o.frequency.setValueAtTime(f, t)
+  o.connect(lp)
+  o.start(t)
+  o.stop(stop)
+  addVibrato([o], t, stop, 5, 0.25)
+}
+
+function padNote(midi, t, dur, vel) {
+  const f = freqOf(midi)
+  const g = ac.createGain()
+  const lp = ac.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.Q.value = 0.3
+  lp.frequency.value = Math.min(1800, f * 3 + 400)
+  const stop = adsr(g, t, dur, 0.35, 0.3, 0.8, 0.6, 0.05 * vel)
+  lp.connect(g)
+  g.connect(bus)
+  const dets = [-12, 0, 12]
+  dets.forEach(c => {
+    const o = ac.createOscillator()
+    o.type = 'sawtooth'
+    o.frequency.setValueAtTime(f, t)
+    o.detune.value = c
+    o.connect(lp)
+    o.start(t)
+    o.stop(stop)
+  })
+}
+
+// ─── drums (no pitch, so no notes on the sheet music) ────────────────────────
+function noiseHit(t, len, ftype, freq, q, peak, tau) {
+  const src = ac.createBufferSource()
+  src.buffer = noise_long
+  const f = ac.createBiquadFilter()
+  f.type = ftype
+  f.frequency.value = freq
+  f.Q.value = q
+  const g = ac.createGain()
+  g.gain.setValueAtTime(peak, t)
+  g.gain.setTargetAtTime(0, t, tau)
+  src.connect(f)
+  f.connect(g)
+  g.connect(bus)
+  src.start(t)
+  src.stop(t + len)
+}
+
+function kickHit(t, vel) {
+  const o = ac.createOscillator()
+  const g = ac.createGain()
+  o.type = 'sine'
+  o.frequency.setValueAtTime(150, t)
+  o.frequency.exponentialRampToValueAtTime(48, t + 0.1)
+  g.gain.setValueAtTime(0.7 * vel, t)
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
+  o.connect(g)
+  g.connect(bus)
+  o.start(t)
+  o.stop(t + 0.32)
+}
+
+function snareHit(t, vel) {
+  noiseHit(t, 0.25, 'bandpass', 1900, 0.7, 0.4 * vel, 0.05)
+  const o = ac.createOscillator()
+  const g = ac.createGain()
+  o.type = 'triangle'
+  o.frequency.setValueAtTime(190, t)
+  g.gain.setValueAtTime(0.22 * vel, t)
+  g.gain.setTargetAtTime(0, t, 0.03)
+  o.connect(g)
+  g.connect(bus)
+  o.start(t)
+  o.stop(t + 0.2)
+}
+
+function voice(kind, midi, t, dur, vel, ch) {
+  const v = vel * (TRIM[kind] || 1)
+  switch(kind) {
+    case 'flute':      fluteNote(midi, t, dur, v); break
+    case 'music box':  boxNote(midi, t, dur, v); break
+    case 'strings':    stringsNote(midi, t, dur, v); break
+    case 'organ':      organNote(midi, t, dur, v); break
+    case 'harp':       harpNote(midi, t, dur, v); break
+    case 'guitar':     guitarNote(midi, t, dur, v); break
+    case 'marimba':    marimbaNote(midi, t, dur, v); break
+    case 'bell':       bellNote(midi, t, dur, v); break
+    case 'synth lead': synthLeadNote(midi, t, dur, v); break
+    case 'chiptune':   chipNote(midi, t, dur, v); break
+    case 'brass':      brassNote(midi, t, dur, v); break
+    case 'clarinet':   clarinetNote(midi, t, dur, v); break
+    case 'synth pad':  padNote(midi, t, dur, v); break
+    case 'kick':       kickHit(t, v); break
+    case 'snare':      snareHit(t, v); break
+    case 'hat':        noiseHit(t, 0.08, 'highpass', 7500, 0.7, 0.16 * v, 0.012); break
+    case 'crash':      noiseHit(t, 1.6, 'highpass', 4500, 0.7, 0.3 * v, 0.35); break
+    default:           pianoNote(midi, t, dur, v, ch); break
+  }
+}
+
+// ─── Playback + cursor ───────────────────────────────────────────────────────
+
+function tick() {
+  if (!play) return
+  const now = ac.currentTime
+  while (play.i < play.ev.length && play.t0 + play.ev[play.i].t < now + 0.5) {
+    const e = play.ev[play.i]
+    voice(e.kind, e.midi, play.t0 + e.t + Math.random() * 0.006, e.d, e.vel, e.ch)
+    play.i++
+  }
+}
+
+function hl_on(h) {
+  const el = document.getElementById(h.id)
+  if (!el) return
+  el.classList.add('on')
+  const host = el.closest('.score-host')
+  if (host && host.id === 'fHost' && h.id.indexOf('_m') > 0) {
+    const nowms = Date.now()
+    const r = el.getBoundingClientRect()
+    if ((r.top < 90 || r.bottom > window.innerHeight - 90) && nowms - play.last_scroll > 700) {
+      play.last_scroll = nowms
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    }
+  }
+}
+
+function hl_off(h) {
+  const el = document.getElementById(h.id)
+  if (el) el.classList.remove('on')
+}
+
+function frame() {
+  if (!play) return
+  const now = ac.currentTime - play.t0
+
+  play.act = play.act.filter(h => {
+    if (now >= h.t1) { hl_off(h); return false }
+    return true
+  })
+
+  while (play.hp < play.hl.length && play.hl[play.hp].t0 <= now) {
+    const h = play.hl[play.hp]
+    if (now < h.t1) { hl_on(h); play.act.push(h) }
+    play.hp++
+  }
+
+  const pg = document.getElementById('pg_' + play.uid)
+  if (pg) pg.style.width = Math.min(100, Math.max(0, now / play.tot * 100)) + '%'
+
+  if (now > play.tot + 1.2) { stopPlay(); return }
+  play.raf = requestAnimationFrame(frame)
+}
+
+function setPlayingUI(uid) {
+  document.querySelectorAll('.btn-play').forEach(b => {
+    b.textContent = (uid && b.dataset.uid === uid) ? 'Stop' : 'Play'
+  })
+  $('stopBtn').classList.toggle('hidden', !uid)
+}
+
+function stopPlay() {
+  if (play) {
+    clearInterval(play.timer)
+    cancelAnimationFrame(play.raf)
+    const pg = document.getElementById('pg_' + play.uid)
+    if (pg) pg.style.width = '0'
+    play = null
+  }
+  document.querySelectorAll('.nt.on').forEach(el => el.classList.remove('on'))
+  if (bus) {
+    const old = bus
+    old.gain.setTargetAtTime(0, ac.currentTime, 0.03)
+    setTimeout(() => { try { old.disconnect() } catch(e) {} }, 400)
+    bus = null
+  }
+  setPlayingUI(null)
+}
+
+function barFactors(m) {
+  const f = []
+  for (let b = 0; b < m.nbars; b++) f.push(1 + (b % 4 === 3 ? (b === m.nbars - 1 ? 0.22 : 0.05) : 0))
+  return f
+}
+
+function leadVel(m, b, e, k, rnd) {
+  const v = 0.6 + (e.s === 0 ? 0.12 : e.s === m.slots / 2 ? 0.05 : 0) + 0.014 * (e.p.i - k.center) +
+    [0, 0.03, 0.07, -0.02][b % 4] - (b === m.nbars - 1 ? 0.1 : 0) + rnd * 0.08
+  return clamp(v, 0.35, 0.98)
+}
+
+function accVel(e, rnd) {
+  return clamp(0.36 + (e.s === 0 ? 0.08 : 0) + rnd * 0.06, 0.25, 0.7)
+}
+
+function drumHits(mode, slots, b, nb) {
+  const h = []
+  if (mode === 'off') return h
+  if (b === nb - 1) {
+    h.push({ s: 0, k: 'kick', v: 0.9 })
+    h.push({ s: 0, k: 'crash', v: 0.7 })
+    return h
+  }
+  if (slots === 8) {
+    if (mode === 'light') {
+      h.push({ s: 0, k: 'kick', v: 0.8 })
+      h.push({ s: 4, k: 'kick', v: 0.7 })
+      h.push({ s: 2, k: 'hat', v: 0.5 })
+      h.push({ s: 6, k: 'hat', v: 0.5 })
+    } else {
+      h.push({ s: 0, k: 'kick', v: 0.95 })
+      h.push({ s: 4, k: 'kick', v: 0.85 })
+      if (b % 2 === 1) h.push({ s: 3, k: 'kick', v: 0.6 })
+      h.push({ s: 2, k: 'snare', v: 0.85 })
+      if (b % 4 === 3) {
+        const fill = [4, 5, 6, 7]
+        fill.forEach((s, j) => h.push({ s: s, k: 'snare', v: 0.5 + j * 0.13 }))
+      } else {
+        h.push({ s: 6, k: 'snare', v: 0.85 })
+      }
+      for (let s = 0; s < 8; s++) h.push({ s: s, k: 'hat', v: s % 2 === 0 ? 0.55 : 0.35 })
+    }
+  } else {
+    h.push({ s: 0, k: 'kick', v: 0.85 })
+    if (mode === 'light') {
+      h.push({ s: 2, k: 'hat', v: 0.5 })
+      h.push({ s: 4, k: 'hat', v: 0.5 })
+    } else {
+      h.push({ s: 2, k: 'snare', v: 0.7 })
+      h.push({ s: 4, k: 'snare', v: 0.7 })
+      for (let s = 0; s < 6; s++) h.push({ s: s, k: 'hat', v: s % 2 === 0 ? 0.55 : 0.35 })
+    }
+  }
+  return h
+}
+
+function chosenSounds() {
+  return {
+    lead: lead_sel === 'auto' ? cur_style.lead : lead_sel,
+    acc: acc_sel === 'auto' ? (cur_style.acc || 'piano') : acc_sel,
+    drums: drum_sel === 'auto' ? (cur_style.drums || 'off') : drum_sel
+  }
+}
+
+function buildPlayEvents(m) {
+  const k = cur_key
+  const spb = 60 / tempo
+  const nb = m.nbars
+
+  // each bar has its own pace: a little breath at phrase ends, a real slow-down on the last bar
+  const fac = barFactors(m)
+  const barT = []
+  let at = 0
+  for (let b = 0; b < nb; b++) {
+    barT.push(at)
+    at += m.beats * spb * fac[b]
+  }
+
+  const snd = chosenSounds()
+  const stac = cur_style.stac || 0
+  const ev = []
+  const hl = []
+
+  m.mel.forEach((bar, b) => {
+    const unit = spb * fac[b]
+    bar.forEach(e => {
+      if (e.r) return
+      const t = barT[b] + (e.s / 2) * unit
+      const d = (e.d / 2) * unit
+      const art = e.d <= 2 ? (1 - stac) * 0.97 + stac * 0.62 : 0.97
+      ev.push({ t: t, d: d * art, midi: sc(k, e.p.i) + e.p.alt, vel: leadVel(m, b, e, k, Math.random() - 0.5), kind: snd.lead, ch: false })
+      hl.push({ t0: t, t1: t + d, id: m.uid + '_m' + b + '_' + e.s })
+    })
+
+    if (harm) {
+      m.acc[b].forEach(e => {
+        const t = barT[b] + (e.s / 2) * unit
+        const d = (e.d / 2) * unit
+        const chord = e.ps.length > 1
+        const v = accVel(e, Math.random() - 0.5)
+        e.ps.forEach((q, j) => {
+          ev.push({ t: t + j * (chord ? 0.012 : 0), d: d * 0.97, midi: sc(k, q.i) + q.alt, vel: v, kind: snd.acc, ch: chord || e.d >= 4 })
+        })
+        hl.push({ t0: t, t1: t + d, id: m.uid + '_a' + b + '_' + e.s })
+      })
+    }
+
+    drumHits(snd.drums, m.slots, b, nb).forEach(h => {
+      ev.push({ t: barT[b] + (h.s / 2) * unit, d: 0.1, midi: 0, vel: h.v, kind: h.k, ch: false })
+    })
+  })
+
+  ev.sort((a, b) => a.t - b.t)
+  hl.sort((a, b) => a.t0 - b.t0)
+  return { ev: ev, hl: hl, tot: at }
+}
+
+function playItem(uid) {
+  if (play && play.uid === uid) { stopPlay(); return }
+  stopPlay()
+
+  const m = reg[uid]
+  if (!m) return
+  initAudio()
+  if (ac.state === 'suspended') ac.resume()
+
+  const r = buildPlayEvents(m)
+
+  bus = ac.createGain()
+  bus.connect(master)
+  bus.connect(rev_in)
+
+  play = { uid: uid, t0: ac.currentTime + 0.15, ev: r.ev, hl: r.hl, i: 0, hp: 0, act: [], tot: r.tot, last_scroll: 0 }
+  play.timer = setInterval(tick, 30)
+  play.raf = requestAnimationFrame(frame)
+  setPlayingUI(uid)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function log(msg, type = '') {
+  const box = $('logBox')
+  const entry = document.createElement('div')
+  entry.className = type
+  entry.textContent = '> ' + msg
+  box.appendChild(entry)
+  box.scrollTop = box.scrollHeight
+}
+
+function drawHost(host) {
+  const m = reg[host.dataset.uid]
+  if (!m || !cur_key) return
+  const full = host.dataset.full === '1'
+  const W = Math.max(280, Math.floor(host.clientWidth))
+  const g = W < 420 ? 7 : W < 560 ? 8 : 9.5
+  const r = engrave(m, cur_key, { W: W, g: g, harm: harm, tempo: tempo, full: full, maxsys: full ? 0 : 1 })
+  host.innerHTML = r.svg
+  const lbl = host.closest('.card') && host.closest('.card').querySelector('.bars')
+  if (lbl) lbl.textContent = full ? 'all ' + r.total + ' bars' : 'bars 1 to ' + r.shown + ' of ' + r.total
+}
+
+function redrawAll() {
+  document.querySelectorAll('.score-host').forEach(drawHost)
+}
+
+function renderCards() {
+  const grid = $('grid')
+  grid.innerHTML = ''
+  melodies.forEach((m, idx) => {
+    const c = document.createElement('div')
+    c.className = 'card'
+    c.dataset.idx = idx
+    const star = (generation >= 3 && idx === seedpick) ? '<span class="star">seed pick</span>' : ''
+    c.innerHTML =
+      '<div class="card-top"><span class="tag">Melody ' + (idx + 1) + '</span><span class="sc">quality ' + m.score + ' · ' + patFor(m.pats[0], m.beats) + '</span>' + star + '</div>' +
+      '<div class="paper"><div class="score-host" data-uid="' + m.uid + '" data-full="0"></div></div>' +
+      '<div class="prog"><i id="pg_' + m.uid + '"></i></div>' +
+      '<div class="card-bot"><button class="btn-play" data-uid="' + m.uid + '">Play</button>' +
+      '<button class="tog" data-uid="' + m.uid + '">Show all bars</button><span class="bars"></span></div>'
+    grid.appendChild(c)
+  })
+  redrawAll()
+}
+
+function showStage() {
+  stopPlay()
+  picked = null
+  $('final').classList.add('hidden')
+  $('stage').classList.remove('hidden')
+  $('stageTitle').textContent = generation === 0 ? 'First generation' : generation >= 3 ? 'Final round' : 'Generation ' + generation
+  $('stageHint').textContent = generation >= 3
+    ? 'Last round. Tap the one you like best and use it as your final.'
+    : 'Press play on each one, then tap the card you like best.'
+  $('evolveBtn').classList.toggle('hidden', generation >= 3)
+  $('evolveBtn').disabled = true
+  $('finishBtn').disabled = true
+  renderCards()
+  $('stage').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function generateInitial() {
+  melodies = []
+  generation = 0
+
+  log('key: ' + cur_key.name + ' · ' + cur_style.meter + '/4 · ' + tempo + ' bpm · ' + nbars + ' bars')
+
+  for (let i = 0; i < 5; i++) {
+    let p = compose(cur_key, cur_style, nbars)
+    let best = p
+    let tries = 0
+    while (!melodyRules(p, null, 1) && tries < 80) {
+      p = compose(cur_key, cur_style, nbars)
+      if (p.score > best.score) best = p
+      tries++
+    }
+    if (!melodyRules(p, null, 1)) p = best
+    reg_piece(p)
+    melodies.push(p)
+    log('melody ' + (i + 1) + ' · tries: ' + tries + ' · quality: ' + p.score)
+  }
+
+  showStage()
+}
+
+function runNextGen() {
+  if (picked === null) return
+  const parent = melodies[picked]
+  generation++
+  log('--- generation ' + generation + ' ---', 'warn')
+
+  const next = []
+  for (let i = 0; i < 5; i++) {
+    let ch = mutatePiece(parent)
+    let best = ch
+    let tries = 0
+    while (!melodyRules(ch, parent.score, generation) && tries < 150) {
+      ch = mutatePiece(parent)
+      if (ch.score > best.score) best = ch
+      tries++
+    }
+    if (!melodyRules(ch, parent.score, generation)) ch = best
+    reg_piece(ch)
+    next.push(ch)
+    log('mutation ' + (i + 1) + ' gen ' + generation + ' · tries: ' + tries + ' · quality: ' + ch.score)
+  }
+
+  melodies = next
+  showStage()
+}
+
+function showFinal(m) {
+  stopPlay()
+  $('grid').innerHTML = ''
+  $('stage').classList.add('hidden')
+  $('final').classList.remove('hidden')
+
+  $('fTitle').textContent = SCENE_NAMES[cur_scene] || 'Untitled'
+  $('fSub').textContent = cur_key.name + ' · ' + m.beats + '/4 · seed ' + seed + ' · generation ' + generation
+  $('fHost').dataset.uid = m.uid
+  $('fPlay').dataset.uid = m.uid
+  $('final').querySelector('.prog i').id = 'pg_' + m.uid
+  $('fPlay').textContent = 'Play'
+  drawHost($('fHost'))
+  final_uid = m.uid
+  const snd = chosenSounds()
+  $('gmLead').value = String(GM_OF[snd.lead] !== undefined ? GM_OF[snd.lead] : 0)
+  $('gmAcc').value = String(GM_OF[snd.acc] !== undefined ? GM_OF[snd.acc] : 0)
+  $('dlMsg').textContent = DL_HINT
+  log('final melody chosen · quality: ' + m.score, 'ok')
+  $('final').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function setTempo(v) {
+  tempo = v
+  $('tempoSet').value = v
+  $('tempoFin').value = v
+  $('tempoSetVal').textContent = v
+  $('tempoFinVal').textContent = v
+}
+
+// ─── Events ──────────────────────────────────────────────────────────────────
+
+function onScene() {
+  const manual = $('sceneSelect').value === 'manual'
+  $('keyField').classList.toggle('hidden', !manual)
+  $('modeField').classList.toggle('hidden', !manual)
+  $('meterField').classList.toggle('hidden', !manual)
+}
+
+function onGenerate() {
+  stopPlay()
+  cur_scene = $('sceneSelect').value
+  nbars = parseInt($('lenSelect').value)
+  lead_sel = $('leadSelect').value
+  acc_sel = $('accSelect').value
+  drum_sel = $('drumSelect').value
+  harm = $('harmToggle').checked
+  seed = random_seed(10)
+  seedpick = parseInt(seed[Math.floor(Math.random() * seed.length)]) % 5
+
+  $('grid').innerHTML = ''
+  $('final').classList.add('hidden')
+
+  let pattern
+  if (cur_scene === 'manual') {
+    pattern = $('modeSelect').value
+    cur_style = Object.assign({}, STYLES['manual'], { meter: parseInt($('meterSelect').value) })
+    cur_key = selectKey(seed, pattern, parseInt($('keySelect').value))
+  } else {
+    cur_style = STYLES[cur_scene]
+    const st = selectTempo(cur_scene)
+    setTempo(st[0])
+    pattern = st[1]
+    cur_key = selectKey(seed, pattern)
+  }
+
+  $('seedLine').classList.remove('hidden')
+  $('seedLine').innerHTML = 'seed <b>' + seed + '</b> · key <b>' + cur_key.name + '</b> · <b>' + cur_style.meter + '/4</b> · <b>' + tempo + '</b> bpm'
+
+  generateInitial()
+}
+
+function init() {
+  notes.forEach((n, i) => {
+    const o = document.createElement('option')
+    o.value = i
+    o.textContent = n
+    $('keySelect').appendChild(o)
+  })
+
+  $('sceneSelect').addEventListener('change', onScene)
+  $('genBtn').addEventListener('click', onGenerate)
+  $('stopBtn').addEventListener('click', stopPlay)
+
+  $('harmToggle').addEventListener('change', () => {
+    harm = $('harmToggle').checked
+    stopPlay()
+    redrawAll()
+  })
+
+  $('leadSelect').addEventListener('change', () => { lead_sel = $('leadSelect').value })
+  $('accSelect').addEventListener('change', () => { acc_sel = $('accSelect').value })
+  $('drumSelect').addEventListener('change', () => { drum_sel = $('drumSelect').value })
+
+  ;['tempoSet', 'tempoFin'].forEach(id => {
+    $(id).addEventListener('input', e => setTempo(parseInt(e.target.value)))
+    $(id).addEventListener('change', redrawAll)
+  })
+
+  $('grid').addEventListener('click', e => {
+    const pb = e.target.closest('.btn-play')
+    if (pb) { playItem(pb.dataset.uid); return }
+
+    const tg = e.target.closest('.tog')
+    if (tg) {
+      const host = tg.closest('.card').querySelector('.score-host')
+      host.dataset.full = host.dataset.full === '1' ? '0' : '1'
+      tg.textContent = host.dataset.full === '1' ? 'Show first bars' : 'Show all bars'
+      drawHost(host)
+      return
+    }
+
+    const card = e.target.closest('.card')
+    if (!card) return
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('sel'))
+    card.classList.add('sel')
+    picked = parseInt(card.dataset.idx)
+    $('evolveBtn').disabled = false
+    $('finishBtn').disabled = false
+  })
+
+  $('fPlay').addEventListener('click', () => playItem($('fPlay').dataset.uid))
+  $('evolveBtn').addEventListener('click', runNextGen)
+  $('finishBtn').addEventListener('click', () => { if (picked !== null) showFinal(melodies[picked]) })
+  $('againBtn').addEventListener('click', () => {
+    stopPlay()
+    $('final').classList.add('hidden')
+    $('setup').scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+
+  let last_w = window.innerWidth
+  let rt = null
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === last_w) return
+    last_w = window.innerWidth
+    clearTimeout(rt)
+    rt = setTimeout(redrawAll, 150)
+  })
+
+  fillGM()
+  $('dlBtn').addEventListener('click', doExport)
+  if (window.claude && window.claude.use) {
+    window.claude.use('downloads').then(d => { dlApi = d; $('exportBox').classList.toggle('hidden', !d) }).catch(() => {})
+  }
+
+  onScene()
+  loadClefs()
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MIDI EXPORT  (a standard MIDI file, delivered inside a zip because the viewer only
+//               allows certain file types)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const GM = [['Acoustic Grand Piano', 0], ['Bright Piano', 1], ['Electric Piano', 4], ['Harpsichord', 6], ['Celesta', 8], ['Glockenspiel', 9],
+  ['Music Box', 10], ['Vibraphone', 11], ['Marimba', 12], ['Xylophone', 13], ['Tubular Bells', 14], ['Church Organ', 19], ['Accordion', 21],
+  ['Nylon Guitar', 24], ['Steel Guitar', 25], ['Clean Electric Guitar', 27], ['Acoustic Bass', 32], ['Fingered Bass', 33], ['Violin', 40],
+  ['Cello', 42], ['Pizzicato Strings', 45], ['Harp', 46], ['String Ensemble', 48], ['Synth Strings', 50], ['Choir Aahs', 52], ['Trumpet', 56],
+  ['French Horn', 60], ['Brass Section', 61], ['Alto Sax', 65], ['Oboe', 68], ['Clarinet', 71], ['Flute', 73], ['Pan Flute', 75],
+  ['Square Lead', 80], ['Saw Lead', 81], ['Warm Pad', 89], ['Koto', 107], ['Steel Drums', 114]]
+const GM_OF = { piano: 0, flute: 73, 'music box': 10, strings: 48, organ: 19, harp: 46, guitar: 24, marimba: 12, bell: 9,
+  'synth lead': 81, chiptune: 80, brass: 61, clarinet: 71, 'synth pad': 89 }
+const DL_HINT = 'The file comes inside a zip because this viewer only allows certain file types. Unzip it to get the .mid file.'
+
+function fillGM() {
+  const o = GM.map(x => '<option value="' + x[1] + '">' + x[0] + '</option>').join('')
+  $('gmLead').innerHTML = o
+  $('gmAcc').innerHTML = o
+}
+
+function vlq(n) {
+  const b = [n & 0x7f]
+  n >>= 7
+  while (n > 0) { b.unshift((n & 0x7f) | 0x80); n >>= 7 }
+  return b
+}
+function u32(n) { return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255] }
+function u16(n) { return [(n >> 8) & 255, n & 255] }
+function metaText(type, s) {
+  const b = Array.from(new TextEncoder().encode(s))
+  return [0xff, type].concat(vlq(b.length), b)
+}
+
+function trackBytes(events) {
+  events.sort((a, b) => a.tick - b.tick || a.ord - b.ord)
+  const out = []
+  let last = 0
+  events.forEach(e => {
+    vlq(e.tick - last).forEach(x => out.push(x))
+    e.bytes.forEach(x => out.push(x))
+    last = e.tick
+  })
+  out.push(0, 0xff, 0x2f, 0)
+  return [0x4d, 0x54, 0x72, 0x6b].concat(u32(out.length), out)
+}
+
+function midiBytes(m, leadProg, accProg) {
+  const k = cur_key
+  const TPQ = 480
+  const slotT = TPQ / 2
+  const slots = m.slots
+  const nb = m.nbars
+  const fac = barFactors(m)
+  const stac = cur_style.stac || 0
+  const snd = chosenSounds()
+
+  const note = (arr, ch, tick, dur, pitch, vel) => {
+    arr.push({ tick: tick, ord: 1, bytes: [0x90 | ch, pitch, vel] })
+    arr.push({ tick: tick + Math.max(20, dur), ord: 0, bytes: [0x80 | ch, pitch, 0] })
+  }
+
+  const cond = []
+  cond.push({ tick: 0, ord: -5, bytes: metaText(0x03, 'Melody Gen') })
+  cond.push({ tick: 0, ord: -4, bytes: [0xff, 0x58, 4, m.beats, 2, 24, 8] })
+  const sf = k.ks.t === '#' ? k.ks.n : k.ks.t === 'b' ? -k.ks.n : 0
+  cond.push({ tick: 0, ord: -3, bytes: [0xff, 0x59, 2, sf & 255, k.pattern === 'minor' ? 1 : 0] })
+  let prevf = null
+  for (let b = 0; b < nb; b++) {
+    if (fac[b] !== prevf) {
+      const us = Math.round(60000000 / tempo * fac[b])
+      cond.push({ tick: b * slots * slotT, ord: -2, bytes: [0xff, 0x51, 3, (us >> 16) & 255, (us >> 8) & 255, us & 255] })
+      prevf = fac[b]
+    }
+  }
+
+  const mel = []
+  mel.push({ tick: 0, ord: -5, bytes: metaText(0x03, 'Melody') })
+  mel.push({ tick: 0, ord: -3, bytes: [0xb0, 7, 110] })
+  mel.push({ tick: 0, ord: -2, bytes: [0xc0, leadProg] })
+  m.mel.forEach((bar, b) => {
+    bar.forEach(e => {
+      if (e.r) return
+      const art = e.d <= 2 ? (1 - stac) * 0.97 + stac * 0.62 : 0.97
+      note(mel, 0, (b * slots + e.s) * slotT, Math.round(e.d * slotT * art), sc(k, e.p.i) + e.p.alt, Math.round(leadVel(m, b, e, k, 0) * 127))
+    })
+  })
+  const tracks = [cond, mel]
+
+  if (harm) {
+    const acc = []
+    acc.push({ tick: 0, ord: -5, bytes: metaText(0x03, 'Accompaniment') })
+    acc.push({ tick: 0, ord: -3, bytes: [0xb1, 7, 90] })
+    acc.push({ tick: 0, ord: -2, bytes: [0xc1, accProg] })
+    m.acc.forEach((bar, b) => {
+      bar.forEach(e => {
+        e.ps.forEach(q => note(acc, 1, (b * slots + e.s) * slotT, Math.round(e.d * slotT * 0.97), sc(k, q.i) + q.alt, Math.round(accVel(e, 0) * 127)))
+      })
+    })
+    tracks.push(acc)
+  }
+
+  if (snd.drums !== 'off') {
+    const dr = []
+    dr.push({ tick: 0, ord: -5, bytes: metaText(0x03, 'Drums') })
+    const gm = { kick: 36, snare: 38, hat: 42, crash: 49 }
+    for (let b = 0; b < nb; b++) {
+      drumHits(snd.drums, slots, b, nb).forEach(h => note(dr, 9, (b * slots + h.s) * slotT, 60, gm[h.k], Math.round(h.v * 110)))
+    }
+    tracks.push(dr)
+  }
+
+  let bytes = [0x4d, 0x54, 0x68, 0x64].concat(u32(6), u16(1), u16(tracks.length), u16(TPQ))
+  tracks.forEach(t => { bytes = bytes.concat(trackBytes(t)) })
+  return Uint8Array.from(bytes)
+}
+
+const CRC_T = (() => {
+  const t = []
+  for (let n = 0; n < 256; n++) {
+    let c = n
+    for (let j = 0; j < 8; j++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1
+    t.push(c >>> 0)
+  }
+  return t
+})()
+function crc32(b) {
+  let c = 0xffffffff
+  for (let i = 0; i < b.length; i++) c = CRC_T[(c ^ b[i]) & 255] ^ (c >>> 8)
+  return (c ^ 0xffffffff) >>> 0
+}
+function le16(n) { return [n & 255, (n >> 8) & 255] }
+function le32(n) { return [n & 255, (n >>> 8) & 255, (n >>> 16) & 255, (n >>> 24) & 255] }
+
+// a zip with one stored (uncompressed) file
+function zipStore(name, data) {
+  const nm_ = Array.from(new TextEncoder().encode(name))
+  const crc = crc32(data)
+  const date = 23585
+  const local = [].concat(le32(0x04034b50), le16(20), le16(0), le16(0), le16(0), le16(date), le32(crc), le32(data.length), le32(data.length), le16(nm_.length), le16(0), nm_)
+  const cen = [].concat(le32(0x02014b50), le16(20), le16(20), le16(0), le16(0), le16(0), le16(date), le32(crc), le32(data.length), le32(data.length),
+    le16(nm_.length), le16(0), le16(0), le16(0), le16(0), le32(0), le32(0), nm_)
+  const end = [].concat(le32(0x06054b50), le16(0), le16(0), le16(1), le16(1), le32(cen.length), le32(local.length + data.length), le16(0))
+  const out = new Uint8Array(local.length + data.length + cen.length + end.length)
+  out.set(local, 0)
+  out.set(data, local.length)
+  out.set(cen, local.length + data.length)
+  out.set(end, local.length + data.length + cen.length)
+  return out
+}
+
+async function doExport() {
+  const m = reg[final_uid]
+  if (!m || !dlApi) return
+  const base = (SCENE_NAMES[cur_scene] || 'melody') + ' ' + cur_key.name
+  const slug = base.toLowerCase().replace(/[^a-z0-9#]+/g, '-').replace(/^-+|-+$/g, '')
+  const mid = midiBytes(m, parseInt($('gmLead').value), parseInt($('gmAcc').value))
+  const zip = zipStore(slug + '.mid', mid)
+  try {
+    await dlApi.save({ filename: slug + '-midi.zip', data: zip })
+    $('dlMsg').textContent = 'Saved. Unzip it to get ' + slug + '.mid, then open it in any music program.'
+  } catch (err) {
+    const code = err && err.code
+    $('dlMsg').textContent = code === 'declined' ? 'Cancelled. Nothing was saved.' : code === 'rate_limited' ? 'Wait a moment, then try again.' : 'Could not save the file here.'
+  }
+}
+
+// ─── Clef glyphs: measure the real ink so they fit the staff exactly ─────────
+
+function measureGlyph(ch) {
+  const c = document.createElement('canvas').getContext('2d')
+  c.font = '100px ' + CLEF_FONT
+  c.textBaseline = 'alphabetic'
+  const m = c.measureText(ch)
+  return { asc: m.actualBoundingBoxAscent, desc: m.actualBoundingBoxDescent, left: m.actualBoundingBoxLeft, w: m.width }
+}
+
+function sameInk(a, b) {
+  return Math.abs(a.asc - b.asc) < 0.5 && Math.abs(a.desc - b.desc) < 0.5 && Math.abs(a.w - b.w) < 0.5
+}
+
+function measureClefs() {
+  const g = measureGlyph('\u{1D11E}')
+  const f = measureGlyph('\u{1D122}')
+  const nope = measureGlyph('\u{10FFFD}')
+  const ok = g.asc + g.desc > 20 && f.asc + f.desc > 10 && !sameInk(g, nope) && !sameInk(f, nope)
+  if (ok) {
+    CM = { g: g, f: f }
+    clef_ok = true
+    redrawAll()
+  }
+}
+
+function loadClefs() {
+  if (document.fonts && document.fonts.load) {
+    document.fonts.load("100px 'Noto Music'", '\u{1D11E}\u{1D122}').then(measureClefs, measureClefs)
+  } else {
+    measureClefs()
+  }
+}
+
+if (typeof document !== 'undefined' && document.getElementById('grid')) init()
+</script>
+</body>
+</html>

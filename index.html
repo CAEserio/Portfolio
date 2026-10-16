@@ -6,24 +6,24 @@
 
 <!-- ── PRIMARY SEO ── -->
 <title>Angelo Eserio | Software Developer · DevOps · AI</title>
-<meta name="description" content="Angelo Eserio is a Computing Science student at Thompson Rivers University specializing in software development, DevOps, and AI. Based in Kamloops, BC.">
+<meta name="description" content="Angelo Eserio is a Computing Science student at Thompson Rivers University and a software developer co-op at Dawson Group, working across full-stack development, DevOps, and AI. Based in Kamloops, BC.">
 <meta name="author" content="Angelo Eserio">
-<meta name="keywords" content="Angelo Eserio, software developer, DevOps, AI, computing science, TRU, Kamloops, BC, AWS Bedrock, OpenShift, portfolio">
-<link rel="canonical" href="https://angeloeserio.dev">
+<meta name="keywords" content="Angelo Eserio, software developer, full-stack, DevOps, AI, computing science, TRU, Kamloops, BC, React, Node.js, PostgreSQL, AWS Bedrock, OpenShift, portfolio">
+<link rel="canonical" href="https://angeloeserio.com">
 
 <!-- ── OPEN GRAPH (LinkedIn, Facebook, Discord) ── -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://angeloeserio.dev">
+<meta property="og:url" content="https://angeloeserio.com">
 <meta property="og:title" content="Angelo Eserio | Software Developer">
-<meta property="og:description" content="CS student at TRU. DevOps co-op at BCLC. Building things at the intersection of AI and software engineering.">
-<meta property="og:image" content="https://angeloeserio.dev/og-image.png">
+<meta property="og:description" content="CS student at TRU. Software developer co-op at Dawson Group. Building things at the intersection of AI and software engineering.">
+<meta property="og:image" content="https://angeloeserio.com/og-image.png">
 <meta property="og:locale" content="en_CA">
 
 <!-- ── TWITTER CARD ── -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Angelo Eserio | Software Developer">
-<meta name="twitter:description" content="CS student at TRU. DevOps co-op at BCLC. Building things at the intersection of AI and software engineering.">
-<meta name="twitter:image" content="https://angeloeserio.dev/og-image.png">
+<meta name="twitter:description" content="CS student at TRU. Software developer co-op at Dawson Group. Building things at the intersection of AI and software engineering.">
+<meta name="twitter:image" content="https://angeloeserio.com/og-image.png">
 
 <!-- ── STRUCTURED DATA (JSON-LD) ── -->
 <script type="application/ld+json">
@@ -31,9 +31,10 @@
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Angelo Eserio",
-  "url": "https://angeloeserio.dev",
+  "url": "https://angeloeserio.com",
   "jobTitle": "Software Developer",
-  "description": "Computing Science student at Thompson Rivers University specializing in software development, DevOps, and AI engineering.",
+  "description": "Computing Science student at Thompson Rivers University and software developer co-op at Dawson Group, specializing in full-stack development, DevOps, and AI engineering.",
+  "worksFor": { "@type": "Organization", "name": "Dawson Group" },
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Kamloops",
@@ -48,7 +49,7 @@
     "https://github.com/CAEserio",
     "https://linkedin.com/in/caeserio"
   ],
-  "knowsAbout": ["Software Development", "DevOps", "Cloud Infrastructure", "Machine Learning", "AI Agents", "AWS Bedrock", "Red Hat OpenShift", "Docker", "Kubernetes"]
+  "knowsAbout": ["Software Development", "Full-Stack Development", "React", "Node.js", "PostgreSQL", "DevOps", "Cloud Infrastructure", "Machine Learning", "AI Agents", "AWS Bedrock", "Red Hat OpenShift", "Docker", "Kubernetes"]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,34 +78,6 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-
-/* ── CURSOR ── */
-
-
-#cursor {
-  position: fixed;
-  width: 10px; height: 10px;
-  background: var(--red);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s ease, width 0.2s, height 0.2s, opacity 0.2s;
-  mix-blend-mode: screen;
-}
-
-#cursor-ring {
-  position: fixed;
-  width: 36px; height: 36px;
-  border: 1px solid rgba(224,48,48,0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: transform 0.18s ease, width 0.25s, height 0.25s, opacity 0.2s;
-}
-
-body:hover #cursor { opacity: 1; }
 
 /* ── NAV ── */
 nav {
@@ -287,21 +260,6 @@ nav.visible {
   z-index: 3;
 }
 
-.hero-red-dot {
-  position: absolute;
-  top: 72px; right: 2.5rem;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--red);
-  animation: pulse 2s ease-in-out infinite;
-  z-index: 3;
-}
-
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(224,48,48,0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(224,48,48,0); }
-}
-
 .hero-bottom-row {
   display: flex;
   justify-content: space-between;
@@ -421,7 +379,7 @@ nav.visible {
   border: 1px solid var(--red);
   transition: background 0.2s, transform 0.15s;
   display: inline-block;
-  cursor: none;
+  cursor: pointer;
 }
 
 .hero-cta-primary:hover {
@@ -661,7 +619,7 @@ main { position: relative; z-index: 1; }
 #projects .bento {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: 160px;
+  grid-auto-rows: minmax(160px, auto);
   gap: 12px;
 }
 .bento-card {
@@ -696,6 +654,7 @@ main { position: relative; z-index: 1; }
 .b-5  { grid-column: span 4; grid-row: span 2; }
 .b-6  { grid-column: span 5; grid-row: span 2; }
 .b-7  { grid-column: span 3; grid-row: span 2; }
+.b-8  { grid-column: span 12; grid-row: span 1; }
 .bento-num {
   font-family: 'DM Mono', monospace;
   font-size: 0.6rem;
@@ -744,6 +703,8 @@ main { position: relative; z-index: 1; }
 .b-3 .bento-title, .b-4 .bento-title, .b-5 .bento-title { font-size: 1.3rem; }
 .b-6 .bento-title { font-size: 1.5rem; }
 .b-7 .bento-title { font-size: 1.2rem; }
+.b-8 .bento-title { font-size: 1.3rem; }
+.b-8 .bento-desc { max-width: 90ch; }
 .bento-desc { font-size: 0.82rem; color: #444; line-height: 1.55; position: relative; z-index: 1; transition: color 0.2s; }
 .bento-card:hover .bento-desc { color: #666; }
 .b-1 .bento-desc { font-size: 0.85rem; color: #4a4a4a; }
@@ -818,17 +779,14 @@ main { position: relative; z-index: 1; }
   background: #0a0a0a;
   border: 1px solid #2a2a2a;
   width: 100%;
-  max-width: 860px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  scrollbar-width: thin;
-  scrollbar-color: #2a2a2a transparent;
+  max-width: 1000px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
+.melody-frame { flex: 1; width: 100%; border: 0; background: #0b0b0b; }
 
 .melody-modal-close {
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -859,182 +817,6 @@ main { position: relative; z-index: 1; }
 }
 .melody-modal-x:hover { color: var(--white); border-color: #555; }
 
-/* ── MELODY DEMO CONTENT (scoped inside modal) ── */
-.melody-app {
-  padding: 1.5rem;
-  font-family: 'Share Tech Mono', monospace;
-  color: #e0e0e0;
-}
-
-.m-tab-nav {
-  display: flex;
-  margin-bottom: 0;
-}
-
-.m-tab-btn {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 10px 22px;
-  border: 1px solid #2a2a2a;
-  border-bottom: none;
-  background: #111;
-  color: #555;
-  cursor: pointer;
-  transition: color 0.15s;
-}
-.m-tab-btn:hover { color: #e0e0e0; }
-.m-tab-btn.active { background: #1a1a1a; color: #e63946; }
-.m-tab-btn:first-child { border-right: none; }
-
-.m-tab-content {
-  border: 1px solid #2a2a2a;
-  border-top: 1px solid #2a2a2a;
-}
-
-.m-tab-pane { display: none; flex-direction: column; gap: 20px; padding: 22px 20px; }
-.m-tab-pane.active { display: flex; }
-
-.m-panel {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-left: 4px solid #e63946;
-  padding: 20px;
-  position: relative;
-}
-
-.m-panel-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: #e63946;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-
-.m-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
-.m-field { display: flex; flex-direction: column; gap: 7px; }
-
-.m-label {
-  font-size: 0.65rem;
-  color: #555;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.m-select, .m-input {
-  background: #111;
-  border: 1px solid #2a2a2a;
-  color: #e0e0e0;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.85rem;
-  padding: 9px 12px;
-  outline: none;
-  transition: border-color 0.15s;
-  min-width: 110px;
-  appearance: none;
-}
-.m-select:focus, .m-input:focus { border-color: #e63946; }
-.m-select option { background: #111; }
-
-.m-btn {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 10px 18px;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.m-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.m-btn-primary { background: #e63946; color: #fff; }
-.m-btn-primary:hover:not(:disabled) { opacity: 0.85; }
-.m-btn-ghost { background: transparent; color: #e63946; border: 1px solid #e63946; }
-.m-btn-ghost:hover:not(:disabled) { background: #e63946; color: #fff; }
-.m-btn-sm { padding: 7px 12px; font-size: 0.58rem; }
-
-.m-harmony {
-  display: flex; align-items: center; gap: 7px;
-  font-size: 0.65rem; color: #555; cursor: pointer;
-  padding: 9px 0;
-}
-.m-harmony input { accent-color: #e63946; width: 13px; height: 13px; cursor: pointer; }
-
-.m-seed-display {
-  margin-top: 14px; font-size: 0.65rem; color: #555;
-  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-}
-.m-seed-label { font-family: 'Orbitron', monospace; font-size: 0.58rem; color: #e63946; letter-spacing: 0.2em; }
-.m-seed-val { color: #e0e0e0; }
-
-.m-log {
-  background: #111; border: 1px solid #2a2a2a;
-  border-left: 4px solid #555;
-  padding: 12px 14px; font-size: 0.65rem; color: #555;
-  max-height: 110px; overflow-y: auto; line-height: 1.9;
-}
-.m-log .e { color: #e0e0e0; }
-.m-log .e-ok { color: #39e67a; }
-.m-log .e-warn { color: #e6c539; }
-
-.m-gen-panel { }
-.m-gen-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.m-gen-badge { font-family: 'Orbitron', monospace; font-size: 0.58rem; color: #555; letter-spacing: 0.18em; }
-.m-gen-badge span { color: #e63946; font-size: 1rem; }
-
-.m-playbar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-.m-pdot { width: 7px; height: 7px; border-radius: 50%; background: #333; flex-shrink: 0; transition: background 0.2s; }
-.m-pdot.active { background: #39e67a; box-shadow: 0 0 7px #39e67a; }
-.m-status { font-size: 0.64rem; color: #555; }
-
-.m-melody-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 10px;
-}
-
-.m-card {
-  background: #111; border: 1px solid #2a2a2a;
-  padding: 12px; cursor: pointer;
-  transition: border-color 0.15s;
-  position: relative;
-}
-.m-card:hover { border-color: #555; }
-.m-card.selected { border-color: #e63946; background: #1a0808; }
-.m-card.playing  { border-color: #39e67a; background: #081508; }
-.m-card.seed-rec { border-color: #e6c539; }
-
-.m-card-num { font-family: 'Orbitron', monospace; font-size: 0.56rem; color: #555; margin-bottom: 6px; }
-.m-card-score { font-size: 1rem; font-weight: bold; color: #e63946; margin-bottom: 4px; }
-.m-card-score.good { color: #39e67a; }
-.m-card-score.ok   { color: #e6c539; }
-.m-card-preview { font-size: 0.54rem; color: #555; word-break: break-all; line-height: 1.5; margin-top: 6px; }
-.m-card-actions { display: flex; gap: 5px; margin-top: 8px; }
-
-.m-piano-roll {
-  width: 100%; height: 48px;
-  background: #0d0d0d; position: relative;
-  overflow: hidden; border: 1px solid #1a1a1a; margin-top: 5px;
-}
-.m-pr-note { position: absolute; height: 6px; background: #e63946; opacity: 0.85; border-radius: 1px; }
-.m-pr-chord { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(230,197,57,0.25); }
-
-.m-gen-actions { margin-top: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-.m-final-melody {
-  font-size: 0.64rem; word-break: break-all; line-height: 1.9;
-  color: #39e67a; border: 1px dashed rgba(57,230,122,0.3);
-  padding: 12px; margin-top: 8px; max-height: 140px; overflow-y: auto;
-}
-
-.m-divider { border: none; border-top: 1px solid #2a2a2a; margin: 4px 0 14px; }
-.m-hidden { display: none !important; }
-
 /* ── REVEAL ── */
 .fade-up { transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1); }
 .js-loaded .fade-up { opacity: 0; transform: translateY(22px); }
@@ -1042,9 +824,10 @@ main { position: relative; z-index: 1; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  #projects .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 160px; }
+  #projects .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(160px, auto); }
   .b-1 { grid-column: span 2; }
   .b-2, .b-3, .b-4, .b-5, .b-6, .b-7 { grid-column: span 1; }
+  .b-8 { grid-column: span 2; }
   .bento-card { min-height: 180px; }
 }
 @media (max-width: 640px) {
@@ -1060,7 +843,7 @@ main { position: relative; z-index: 1; }
   .skill-row:last-child { border-bottom: none; }
   .exp-item { grid-template-columns: 1fr; gap: 1rem; padding: 2rem 0; }
   #projects .bento { grid-template-columns: 1fr; }
-  .b-1, .b-2, .b-3, .b-4, .b-5, .b-6, .b-7 { grid-column: span 1; }
+  .b-1, .b-2, .b-3, .b-4, .b-5, .b-6, .b-7, .b-8 { grid-column: span 1; }
   .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .contact-foot { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
   .hero-lower { flex-direction: column; align-items: flex-start; }
@@ -1071,8 +854,6 @@ main { position: relative; z-index: 1; }
 <body>
 
 <!-- CUSTOM CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
 
 <nav>
   <div class="nav-name">angelo eserio</div>
@@ -1094,8 +875,7 @@ main { position: relative; z-index: 1; }
   <div class="h-rule h-rule-1"></div>
   <div class="h-rule h-rule-2"></div>
   <div class="v-rule v-rule-1"></div>
-  <div class="hero-red-dot"></div>
-  <div class="hero-year-mark">2025 &mdash; PORTFOLIO</div>
+  <div class="hero-year-mark">2026 &middot; PORTFOLIO</div>
 
   <div class="hero-top-row">
     <div class="hero-top-left">Software Developer &nbsp;&middot;&nbsp; DevOps &nbsp;&middot;&nbsp; AI</div>
@@ -1133,6 +913,9 @@ main { position: relative; z-index: 1; }
     <span class="marquee-item">Docker <span class="marquee-dot"></span></span>
     <span class="marquee-item">Kubernetes <span class="marquee-dot"></span></span>
     <span class="marquee-item">Node.js <span class="marquee-dot"></span></span>
+    <span class="marquee-item">React <span class="marquee-dot"></span></span>
+    <span class="marquee-item">PostgreSQL <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Supabase <span class="marquee-dot"></span></span>
     <span class="marquee-item">Deep Q-Learning <span class="marquee-dot"></span></span>
     <span class="marquee-item">Jenkins CI/CD <span class="marquee-dot"></span></span>
     <span class="marquee-item">OpenRouter <span class="marquee-dot"></span></span>
@@ -1148,6 +931,9 @@ main { position: relative; z-index: 1; }
     <span class="marquee-item">Docker <span class="marquee-dot"></span></span>
     <span class="marquee-item">Kubernetes <span class="marquee-dot"></span></span>
     <span class="marquee-item">Node.js <span class="marquee-dot"></span></span>
+    <span class="marquee-item">React <span class="marquee-dot"></span></span>
+    <span class="marquee-item">PostgreSQL <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Supabase <span class="marquee-dot"></span></span>
     <span class="marquee-item">Deep Q-Learning <span class="marquee-dot"></span></span>
     <span class="marquee-item">Jenkins CI/CD <span class="marquee-dot"></span></span>
     <span class="marquee-item">OpenRouter <span class="marquee-dot"></span></span>
@@ -1170,7 +956,7 @@ main { position: relative; z-index: 1; }
       <h2 class="about-h">I make things<br>work, then make<br>them <em>interesting.</em></h2>
     </div>
     <div class="about-right">
-      <p class="about-p">I am a fourth-year Computing Science student at Thompson Rivers University, currently on the Dean's List. I completed a co-op at the BC Lottery Corporation where I worked within their DevOps infrastructure, maintaining OpenShift clusters, improving CI/CD pipelines, and leading the initiative to integrate AI-assisted code reviews using AWS Bedrock.</p>
+      <p class="about-p">I am a fourth-year Computing Science student at Thompson Rivers University, currently on the Dean's List and on my second co-op as a software developer at Dawson Group, where I build internal tools and AI-powered apps with React, Node.js, and PostgreSQL. Before that I did a co-op at the BC Lottery Corporation, working within their DevOps infrastructure, maintaining OpenShift clusters, improving CI/CD pipelines, and leading the initiative to integrate AI-assisted code reviews using AWS Bedrock.</p>
       <p class="about-p">I am drawn to projects that sit at the intersection of AI and practical software engineering. I find that the most interesting problems are the ones that already exist in the real world and just need someone to approach them differently. Outside of that I maintain a personal homelab running Proxmox, I am into custom keyboards and music, and I tend to pick up new tools and technologies as they become relevant to whatever I am working on.</p>
       <p class="about-p">I am currently looking for new grad roles and co-ops. If you are working on something interesting, feel free to reach out.</p>
       <div class="about-interests">
@@ -1197,25 +983,25 @@ main { position: relative; z-index: 1; }
     <div class="skill-row fade-up">
       <div class="skill-cat">Frameworks</div>
       <div class="skill-items">
-        <span class="sk">Node.js</span><span class="sk">React Native</span><span class="sk">Astro</span><span class="sk">Unity</span><span class="sk">Android SDK</span>
+        <span class="sk">Node.js</span><span class="sk">Express</span><span class="sk">React</span><span class="sk">React Native</span><span class="sk">Tailwind CSS</span><span class="sk">Prisma</span><span class="sk">Astro</span><span class="sk">Unity</span><span class="sk">Android SDK</span>
       </div>
     </div>
     <div class="skill-row fade-up">
       <div class="skill-cat">AI &amp; ML</div>
       <div class="skill-items">
-        <span class="sk">Deep Q-Learning</span><span class="sk">Evolutionary Algorithms</span><span class="sk">Prompt Engineering</span><span class="sk">n8n Agents</span><span class="sk">AWS Bedrock</span><span class="sk">OpenRouter</span><span class="sk">LLM Routing</span>
+        <span class="sk">Deep Q-Learning</span><span class="sk">Evolutionary Algorithms</span><span class="sk">Prompt Engineering</span><span class="sk">n8n Agents</span><span class="sk">AWS Bedrock</span><span class="sk">OpenRouter</span><span class="sk">LLM Routing</span><span class="sk">RAG</span><span class="sk">Embeddings</span><span class="sk">Anthropic API</span>
       </div>
     </div>
     <div class="skill-row fade-up">
       <div class="skill-cat">Cloud &amp; DevOps</div>
       <div class="skill-items">
-        <span class="sk">Red Hat OpenShift</span><span class="sk">Kubernetes</span><span class="sk">Jenkins</span><span class="sk">Docker</span><span class="sk">Git</span><span class="sk">PowerShell</span>
+        <span class="sk">Red Hat OpenShift</span><span class="sk">Kubernetes</span><span class="sk">Jenkins</span><span class="sk">Docker</span><span class="sk">Heroku</span><span class="sk">Cloudflare Tunnels</span><span class="sk">Proxmox</span><span class="sk">Git</span><span class="sk">PowerShell</span>
       </div>
     </div>
     <div class="skill-row fade-up">
       <div class="skill-cat">Databases</div>
       <div class="skill-items">
-        <span class="sk">MySQL</span><span class="sk">Oracle SQL</span><span class="sk">SQLite</span>
+        <span class="sk">PostgreSQL</span><span class="sk">Supabase</span><span class="sk">pgvector</span><span class="sk">Redis</span><span class="sk">MySQL</span><span class="sk">Oracle SQL</span><span class="sk">SQLite</span>
       </div>
     </div>
     <div class="skill-row fade-up">
@@ -1232,6 +1018,27 @@ main { position: relative; z-index: 1; }
   <div class="section-eyebrow fade-up">experience</div>
   <h2 class="section-h fade-up">Where I've been</h2>
   <div class="exp-list">
+    <div class="exp-item fade-up">
+      <div class="exp-left">
+        <div class="exp-date-label">Jan 2026 to Present</div>
+        <div class="exp-company-name">Dawson Group</div>
+        <div class="exp-loc">Kamloops, BC</div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-role-title">Software Developer Co-Op</div>
+        <ul class="exp-points">
+          <li>Built features for an internal <strong>field operations portal</strong>, working across a React and TypeScript front end and an Express, Prisma, and PostgreSQL back end, including admin tooling and authentication.</li>
+          <li>Built a web dashboard for monitoring and managing a <strong>fleet of AI agents</strong> across several organizations, with health status, role-based access, and editable agent identities.</li>
+          <li>Designed and built a <strong>retrieval-augmented mobile app</strong> for health and safety questions in React Native, from architecture decisions through deployment on Heroku, with a Supabase vector database, offline content sync, and cited answers generated with Claude.</li>
+          <li>Wrote an automated evaluation suite with a scripted grader to check answer quality against a go or no-go threshold before rollout.</li>
+          <li>Presented research on a module of the field portal at TRU's SUPER Symposium.</li>
+        </ul>
+        <div class="exp-tags-row">
+          <span class="etag">React</span><span class="etag">TypeScript</span><span class="etag">Node.js</span><span class="etag">Express</span><span class="etag">Tailwind</span><span class="etag">Prisma</span><span class="etag">PostgreSQL</span><span class="etag">React Native</span><span class="etag">Supabase</span><span class="etag">Heroku</span>
+        </div>
+      </div>
+    </div>
+
     <div class="exp-item fade-up">
       <div class="exp-left">
         <div class="exp-date-label">Sep 2024 to Apr 2025</div>
@@ -1291,10 +1098,10 @@ main { position: relative; z-index: 1; }
     </div>
     <div class="bento-card b-3" style="cursor:pointer;" onclick="openMelodyModal()">
       <div class="bento-num">003</div>
-      <div class="bento-title">Evolutionary Music Generator</div>
-      <p class="bento-desc">A music generation system that uses an evolutionary algorithm trained through user selection and a set of rules based on music theory. Each generation evolves based on feedback, producing compositions that become more aligned with the user's preferences over time.</p>
-      <div class="bento-stack"><span>JavaScript</span><span>Web Audio API</span><span>Genetic Algorithm</span></div>
-      <button class="bento-demo-btn" onclick="event.stopPropagation(); openMelodyModal()">▶ Try it live</button>
+      <div class="bento-title">Procedural Music Generator</div>
+      <p class="bento-desc">A web app that composes short pieces and shows them as real sheet music. I rebuilt it from an old Python genetic algorithm into a rule-based composer that writes in phrases, develops motifs, and follows chord progressions, then engraves the result on a grand staff and plays it back with a built-in synth. Pick a scene or a key and tempo, choose from more than a dozen instrument voices, and export to MIDI.</p>
+      <div class="bento-stack"><span>JavaScript</span><span>Web Audio API</span><span>SVG</span><span>MIDI</span></div>
+      <button class="bento-demo-btn" onclick="event.stopPropagation(); openMelodyModal()">&#9654; Try it live</button>
     </div>
     <div class="bento-card b-4">
       <div class="bento-num">004</div>
@@ -1319,6 +1126,12 @@ main { position: relative; z-index: 1; }
       <div class="bento-title">Full-Stack Web Apps</div>
       <p class="bento-desc">Several websites built end-to-end using HTML, CSS, JavaScript, and jQuery on the front end with SQL and PHP handling database management and user input on the back end.</p>
       <div class="bento-stack"><span>JS</span><span>SQL</span><span>PHP</span></div>
+    </div>
+    <div class="bento-card b-8">
+      <div class="bento-num">008</div>
+      <div class="bento-title">Homelab</div>
+      <p class="bento-desc">A Proxmox server I run at home for self-hosting. It runs a Jellyfin media server with GPU passthrough, a containerized media pipeline isolated behind a VPN, and remote access through Cloudflare Tunnels and Tailscale. It goes down more than it should, and I learn something every time it does.</p>
+      <div class="bento-stack"><span>Proxmox</span><span>Docker</span><span>Jellyfin</span><span>Cloudflare Tunnels</span><span>Tailscale</span></div>
     </div>
   </div>
 </section>
@@ -1357,150 +1170,19 @@ main { position: relative; z-index: 1; }
     </div>
   </div>
   <div class="contact-foot">
-    <span class="foot-copy">&copy; 2025 <span>Angelo Eserio</span></span>
-    <span class="foot-copy" id="easter-egg" title="click me" style="cursor:none;">yes the homelab goes down more than it should</span>
+    <span class="foot-copy">&copy; 2026 <span>Angelo Eserio</span></span>
+    <span class="foot-copy" id="easter-egg" title="click me" style="cursor:pointer;">yes the homelab goes down more than it should</span>
   </div>
 </section>
 
 <!-- ── MELODY GENERATOR MODAL ── -->
-<div id="melody-modal" onclick="if(event.target===this)closeMelodyModal()">
+<div id="melody-modal" role="dialog" aria-modal="true" aria-label="Procedural Music Generator" onclick="if(event.target===this)closeMelodyModal()">
   <div class="melody-modal-inner">
     <div class="melody-modal-close">
-      <div class="melody-modal-title">Evolutionary <span>Music Generator</span></div>
+      <div class="melody-modal-title">Live <span>demo</span></div>
       <button class="melody-modal-x" onclick="closeMelodyModal()">[ close ]</button>
     </div>
-    <div class="melody-app">
-      <div class="m-tab-nav">
-        <button class="m-tab-btn active" onclick="mSwitchTab('auto')">Auto (Scene)</button>
-        <button class="m-tab-btn" onclick="mSwitchTab('manual')">Manual (Key / Tempo)</button>
-      </div>
-      <div class="m-tab-content">
-
-        <!-- AUTO -->
-        <div class="m-tab-pane active" id="m-tabAuto">
-          <div class="m-panel">
-            <div class="m-panel-title">// 01 · Setup</div>
-            <div class="m-row">
-              <div class="m-field">
-                <div class="m-label">Scene type</div>
-                <select class="m-select" id="ma-scene">
-                  <option value="overworld">Overworld</option>
-                  <option value="dungeon(exploration)">Dungeon (Exploration)</option>
-                  <option value="dungeon(combat)">Dungeon (Combat)</option>
-                  <option value="main theme">Main Theme</option>
-                  <option value="overworld(combat)">Overworld (Combat)</option>
-                </select>
-              </div>
-              <div class="m-field">
-                <div class="m-label">Harmonies</div>
-                <label class="m-harmony"><input type="checkbox" id="ma-harmony" checked> Play with chords</label>
-              </div>
-              <div class="m-field">
-                <div class="m-label">&nbsp;</div>
-                <button class="m-btn m-btn-primary" id="ma-genBtn">Generate Melodies</button>
-              </div>
-            </div>
-            <div class="m-seed-display m-hidden" id="ma-seedDisplay">
-              <span class="m-seed-label">SEED</span>
-              <span class="m-seed-val" id="ma-seedVal"></span>
-              &nbsp;·&nbsp;<span id="ma-tempoVal"></span> BPM
-              &nbsp;·&nbsp;<span id="ma-patternVal"></span>
-            </div>
-          </div>
-          <div class="m-log" id="ma-log"><div class="e">> melody generator ready. select a scene to begin.</div></div>
-          <div class="m-panel m-hidden" id="ma-genPanel">
-            <div class="m-gen-header">
-              <div class="m-panel-title" style="margin-bottom:0" id="ma-genLabel">// 02 · Generation 0</div>
-              <div class="m-gen-badge">GEN <span id="ma-genNum">0</span></div>
-            </div>
-            <div class="m-playbar">
-              <div class="m-pdot" id="ma-pdot"></div>
-              <div class="m-status" id="ma-status">awaiting playback</div>
-            </div>
-            <hr class="m-divider">
-            <div class="m-melody-grid" id="ma-grid"></div>
-            <div class="m-gen-actions">
-              <button class="m-btn m-btn-primary m-hidden" id="ma-playAll">▶ Play All</button>
-              <button class="m-btn m-btn-ghost m-hidden" id="ma-nextGen">Evolve Selected →</button>
-              <span class="m-status m-hidden" id="ma-hint">← click a melody to select it</span>
-            </div>
-          </div>
-          <div class="m-panel m-hidden" id="ma-finalPanel">
-            <div class="m-panel-title">// Final Melody</div>
-            <div class="m-status">evolution complete after 3 generations</div>
-            <div class="m-final-melody" id="ma-finalDisplay"></div>
-            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="m-btn m-btn-primary" id="ma-playFinal">▶ Play Final</button>
-              <button class="m-btn m-btn-ghost" id="ma-restart">↺ Start Over</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- MANUAL -->
-        <div class="m-tab-pane" id="m-tabManual">
-          <div class="m-panel">
-            <div class="m-panel-title">// 01 · Setup</div>
-            <div class="m-row">
-              <div class="m-field">
-                <div class="m-label">Key</div>
-                <select class="m-select" id="mm-key">
-                  <option>C</option><option>C#</option><option>D</option><option>D#</option>
-                  <option>E</option><option>F</option><option>F#</option><option>G</option>
-                  <option>G#</option><option>A</option><option>A#</option><option>B</option>
-                </select>
-              </div>
-              <div class="m-field">
-                <div class="m-label">Scale</div>
-                <select class="m-select" id="mm-scale">
-                  <option value="major">Major</option>
-                  <option value="minor">Minor</option>
-                </select>
-              </div>
-              <div class="m-field">
-                <div class="m-label">Tempo (BPM)</div>
-                <input type="number" class="m-input" id="mm-tempo" value="120" min="40" max="360" style="width:90px">
-              </div>
-              <div class="m-field">
-                <div class="m-label">Harmonies</div>
-                <label class="m-harmony"><input type="checkbox" id="mm-harmony" checked> Play with chords</label>
-              </div>
-              <div class="m-field">
-                <div class="m-label">&nbsp;</div>
-                <button class="m-btn m-btn-primary" id="mm-genBtn">Generate Melodies</button>
-              </div>
-            </div>
-          </div>
-          <div class="m-log" id="mm-log"><div class="e">> select a key and tempo to begin.</div></div>
-          <div class="m-panel m-hidden" id="mm-genPanel">
-            <div class="m-gen-header">
-              <div class="m-panel-title" style="margin-bottom:0" id="mm-genLabel">// 02 · Generation 0</div>
-              <div class="m-gen-badge">GEN <span id="mm-genNum">0</span></div>
-            </div>
-            <div class="m-playbar">
-              <div class="m-pdot" id="mm-pdot"></div>
-              <div class="m-status" id="mm-status">awaiting playback</div>
-            </div>
-            <hr class="m-divider">
-            <div class="m-melody-grid" id="mm-grid"></div>
-            <div class="m-gen-actions">
-              <button class="m-btn m-btn-primary m-hidden" id="mm-playAll">▶ Play All</button>
-              <button class="m-btn m-btn-ghost m-hidden" id="mm-nextGen">Evolve Selected →</button>
-              <span class="m-status m-hidden" id="mm-hint">← click a melody to select it</span>
-            </div>
-          </div>
-          <div class="m-panel m-hidden" id="mm-finalPanel">
-            <div class="m-panel-title">// Final Melody</div>
-            <div class="m-status">evolution complete after 3 generations</div>
-            <div class="m-final-melody" id="mm-finalDisplay"></div>
-            <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-              <button class="m-btn m-btn-primary" id="mm-playFinal">▶ Play Final</button>
-              <button class="m-btn m-btn-ghost" id="mm-restart">↺ Start Over</button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    <iframe id="melody-frame" class="melody-frame" title="Procedural Music Generator" allow="autoplay"></iframe>
   </div>
 </div>
 
@@ -1612,425 +1294,19 @@ if (egg) {
   });
 }
 // ── MELODY MODAL ──
-function openMelodyModal()  { document.getElementById('melody-modal').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeMelodyModal() { document.getElementById('melody-modal').classList.remove('open'); document.body.style.overflow=''; mStopAll(); }
-function mSwitchTab(tab) {
-  mStopAll();
-  document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.m-tab-pane').forEach(p => p.classList.remove('active'));
-  if (tab === 'auto') {
-    document.querySelector('.m-tab-btn:first-child').classList.add('active');
-    document.getElementById('m-tabAuto').classList.add('active');
-  } else {
-    document.querySelector('.m-tab-btn:last-child').classList.add('active');
-    document.getElementById('m-tabManual').classList.add('active');
-  }
+const melodyModal = document.getElementById('melody-modal');
+const melodyFrame = document.getElementById('melody-frame');
+function openMelodyModal() {
+  if (melodyFrame.src.indexOf('melody/') === -1) melodyFrame.src = 'melody/?theme=dark';
+  melodyModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-
-// SHARED DATA
-const mNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const mMidi  = {'C':61,'C#':62,'D':63,'D#':64,'E':65,'F':66,'F#':67,'G':68,'G#':69,'A':70,'A#':71,'B':72};
-
-// MUSIC LOGIC
-function mRandomSeed(length) {
-  const min = Math.pow(10, length - 1);
-  return String(Math.floor(Math.random() * (9 * min) + min));
+function closeMelodyModal() {
+  melodyModal.classList.remove('open');
+  document.body.style.overflow = '';
+  melodyFrame.src = 'about:blank'; // unloads the page so audio stops
 }
-
-function mSelectKey(seedOrKey, pattern) {
-  const maj = [2,2,1,2,2,2,1], min = [2,1,2,2,1,2,2];
-  const kp  = pattern === 'minor' ? min : maj;
-  let idx   = mNotes.indexOf(seedOrKey) >= 0
-    ? mNotes.indexOf(seedOrKey)
-    : parseInt(seedOrKey[Math.floor(Math.random() * seedOrKey.length)]) % 12;
-  let sig = [mMidi[mNotes[idx]]];
-  for (let i of kp) { idx = (idx + i) % 12; sig.push(mMidi[mNotes[idx]]); }
-  return sig;
-}
-
-function mSelectTempo(scene) {
-  switch (scene.toLowerCase()) {
-    case 'overworld':            return [Math.floor(Math.random()*21)+120, 'major'];
-    case 'dungeon(exploration)': return [Math.floor(Math.random()*11)+70,  'minor'];
-    case 'dungeon(combat)':      return [Math.floor(Math.random()*161)+200,'minor'];
-    case 'main theme':           return [Math.floor(Math.random()*31)+100, 'major'];
-    case 'overworld(combat)':    return [Math.floor(Math.random()*161)+200,'major'];
-    default:                     return [120, 'major'];
-  }
-}
-
-function mRandomMelody(key) {
-  const pool = [...key, 'REST'], mel = [];
-  for (let i = 0; i < 100; i++) mel.push(pool[Math.floor(Math.random() * pool.length)]);
-  return mel;
-}
-
-function mMutate(mel, key) {
-  const pool = [...key, 'REST'];
-  return mel.map(n => Math.floor(Math.random() * 11) < 5 ? pool[Math.floor(Math.random() * pool.length)] : n);
-}
-
-function mRules(mel, ns, add) {
-  let s = 0;
-  for (let i = 1; i < mel.length; i++) {
-    if (mel[i-1] === ns[ns.length-2] && mel[i] === ns[0]) s++;
-  }
-  for (let i = 1; i < mel.length; i++) {
-    const iv = (mel[i] !== 'REST' && mel[i-1] !== 'REST') ? Math.abs(mel[i] - mel[i-1]) : 0;
-    if (iv === 1) s++;
-    if (iv > 4 && iv !== 1) s -= 2;
-  }
-  const mc = {};
-  for (let i = 0; i < mel.length - 2; i++) {
-    const k = JSON.stringify(mel.slice(i, i+3));
-    mc[k] = (mc[k] || 0) + 1;
-  }
-  s += Object.values(mc).filter(c => c > 1).reduce((a,b) => a+b, 0);
-  if (mel[0] === ns[0]) s += 21;
-  if (mel[mel.length-1] === ns[0]) s += 21;
-  return s >= (4 * add);
-}
-
-function mScore(mel, ns) {
-  let s = 0;
-  for (let i = 1; i < mel.length; i++) {
-    if (mel[i-1] === ns[ns.length-2] && mel[i] === ns[0]) s++;
-  }
-  for (let i = 1; i < mel.length; i++) {
-    const iv = (mel[i] !== 'REST' && mel[i-1] !== 'REST') ? Math.abs(mel[i] - mel[i-1]) : 0;
-    if (iv === 1) s++;
-    if (iv > 4 && iv !== 1) s -= 2;
-  }
-  const mc = {};
-  for (let i = 0; i < mel.length - 2; i++) {
-    const k = JSON.stringify(mel.slice(i, i+3));
-    mc[k] = (mc[k] || 0) + 1;
-  }
-  s += Object.values(mc).filter(c => c > 1).reduce((a,b) => a+b, 0);
-  if (mel[0] === ns[0]) s += 21;
-  if (mel[mel.length-1] === ns[0]) s += 21;
-  return s;
-}
-
-function mNoteNameFromMidi(n) {
-  if (n === 'REST') return '·';
-  return mNotes[((n - 61) % 12 + 12) % 12] || '?';
-}
-
-function mReadable(mel) {
-  return mel.map(mNoteNameFromMidi).join('  ->  ');
-}
-
-function mBuildChords(key, len) {
-  const chords = [{beat:0, ns:[key[1], key[Math.min(3,key.length-1)], key[Math.min(6,key.length-1)]]}];
-  for (let i = 4; i < len; i += 4) {
-    const c = Math.floor(Math.random() * 6) + 1;
-    chords.push({beat:i, ns:[
-      key[c % key.length],
-      key[(c+3)%8 < key.length ? (c+3)%8 : 0],
-      key[(c+6)%8 < key.length ? (c+6)%8 : 0]
-    ]});
-  }
-  chords.push({beat:len, ns:[key[0], key[Math.min(3,key.length-1)], key[Math.min(6,key.length-1)]]});
-  return chords;
-}
-
-// AUDIO
-let mAudioCtx = null, mIsPlaying = false;
-function mMidiToFreq(n) { return 440 * Math.pow(2, (n - 69) / 12); }
-
-function mPlay(mel, key, tempo, harmony, onDone) {
-  mStopAll();
-  mAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  mIsPlaying = true;
-  const bd = 60 / tempo, tb = mAudioCtx.currentTime + 0.05;
-  let t = tb;
-  for (let i = 0; i < mel.length; i++) {
-    if (mel[i] === 'REST') { t += bd; continue; }
-    const o = mAudioCtx.createOscillator(), g = mAudioCtx.createGain();
-    o.connect(g); g.connect(mAudioCtx.destination);
-    o.type = 'triangle';
-    o.frequency.setValueAtTime(mMidiToFreq(mel[i]), t);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.35, t + 0.01);
-    g.gain.exponentialRampToValueAtTime(0.001, t + bd * 0.88);
-    o.start(t); o.stop(t + bd);
-    t += bd;
-  }
-  if (harmony && key.length >= 7) {
-    const chords = mBuildChords(key, mel.length);
-    for (const ch of chords) {
-      const ct = tb + ch.beat * bd;
-      for (const mn of ch.ns) {
-        if (!mn) continue;
-        const o = mAudioCtx.createOscillator(), g = mAudioCtx.createGain();
-        o.connect(g); g.connect(mAudioCtx.destination);
-        o.type = 'sine';
-        o.frequency.setValueAtTime(mMidiToFreq(mn - 12), ct);
-        g.gain.setValueAtTime(0, ct);
-        g.gain.linearRampToValueAtTime(0.10, ct + 0.04);
-        g.gain.exponentialRampToValueAtTime(0.001, ct + bd * 4 * 0.92);
-        o.start(ct); o.stop(ct + bd * 4);
-      }
-    }
-  }
-  setTimeout(() => { mIsPlaying = false; if (onDone) onDone(); }, (mel.length * bd + 0.6) * 1000);
-}
-
-function mStopAll() {
-  if (mAudioCtx) { try { mAudioCtx.close(); } catch(e) {} mAudioCtx = null; }
-  mIsPlaying = false;
-}
-
-// UI HELPERS  — p is exactly 'ma' or 'mm'
-function mLog(p, msg, cls) {
-  const box = document.getElementById(p + '-log');
-  const d   = document.createElement('div');
-  d.className = cls ? 'e e-' + cls : 'e';
-  d.textContent = '> ' + msg;
-  box.appendChild(d);
-  box.scrollTop = box.scrollHeight;
-}
-
-function mBuildRoll(mel, container) {
-  container.innerHTML = '';
-  const ps = mel.filter(n => n !== 'REST');
-  if (!ps.length) return;
-  const mn = Math.min(...ps), mx = Math.max(...ps), rng = (mx - mn) || 1;
-  for (let b = 0; b < mel.length; b += 4) {
-    const el = document.createElement('div');
-    el.className = 'm-pr-chord';
-    el.style.left = ((b / mel.length) * 100) + '%';
-    container.appendChild(el);
-  }
-  mel.forEach((n, i) => {
-    if (n === 'REST') return;
-    const el = document.createElement('div');
-    el.className = 'm-pr-note';
-    el.style.left  = ((i / mel.length) * 100) + '%';
-    el.style.width = Math.max(0.4, (100 / mel.length * 0.82)) + '%';
-    el.style.top   = ((1 - (n - mn) / rng) * 80 + 5) + '%';
-    container.appendChild(el);
-  });
-}
-
-function mRenderCards(p, state, selectable) {
-  const grid = document.getElementById(p + '-grid');
-  grid.innerHTML = '';
-  state.selectedIdx = null;
-
-  state.melodies.forEach((mel, idx) => {
-    const sc   = mScore(mel, state.key);
-    const card = document.createElement('div');
-    card.className = 'm-card';
-    card.dataset.idx = idx;
-
-    const scCls = sc >= 50 ? 'good' : sc >= 25 ? 'ok' : '';
-    card.innerHTML =
-      '<div class="m-card-num">MELODY ' + (idx+1) + '</div>' +
-      '<div class="m-card-score ' + scCls + '">score: ' + sc + '</div>' +
-      '<div class="m-card-preview">' + mel.slice(0,18).map(mNoteNameFromMidi).join(' ') + '</div>';
-
-    const roll = document.createElement('div');
-    roll.className = 'm-piano-roll';
-    card.appendChild(roll);
-    mBuildRoll(mel, roll);
-
-    const acts = document.createElement('div');
-    acts.className = 'm-card-actions';
-    const pb = document.createElement('button');
-    pb.className = 'm-btn m-btn-ghost m-btn-sm';
-    pb.textContent = 'Play';
-    pb.onclick = function(e) {
-      e.stopPropagation();
-      document.querySelectorAll('#' + p + '-grid .m-card').forEach(c => c.classList.remove('playing'));
-      card.classList.add('playing');
-      document.getElementById(p + '-pdot').classList.add('active');
-      document.getElementById(p + '-status').textContent = 'playing melody ' + (idx+1) + '...';
-      var harmony = document.getElementById(p + '-harmony').checked;
-      mPlay(mel, state.key, state.tempo, harmony, function() {
-        card.classList.remove('playing');
-        document.getElementById(p + '-pdot').classList.remove('active');
-        document.getElementById(p + '-status').textContent = 'done';
-      });
-    };
-    acts.appendChild(pb);
-    card.appendChild(acts);
-
-    if (selectable) {
-      card.onclick = function() {
-        document.querySelectorAll('#' + p + '-grid .m-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.selectedIdx = idx;
-        document.getElementById(p + '-nextGen').classList.remove('m-hidden');
-        document.getElementById(p + '-hint').classList.add('m-hidden');
-        mLog(p, 'melody ' + (idx+1) + ' selected (score: ' + sc + ')', 'ok');
-      };
-    }
-
-    grid.appendChild(card);
-  });
-}
-
-function mGenInitial(p, state) {
-  state.melodies = []; state.gen = 0;
-  mLog(p, 'building key signature...');
-  mLog(p, 'scale: ' + state.key.map(mNoteNameFromMidi).join(' ') + ' · ' + state.tempo + ' bpm · ' + state.pattern);
-
-  for (var i = 0; i < 5; i++) {
-    var mel = mRandomMelody(state.key), tries = 0;
-    while (!mRules(mel, state.key, 1) && tries < 500) { mel = mMutate(mel.slice(), state.key); tries++; }
-    state.melodies.push(mel);
-    mLog(p, 'melody ' + (i+1) + ' · tries: ' + tries + ' · score: ' + mScore(mel, state.key));
-  }
-
-  document.getElementById(p + '-genPanel').classList.remove('m-hidden');
-  document.getElementById(p + '-genLabel').textContent = '// 02 · Generation 0 — Initial Melodies';
-  document.getElementById(p + '-genNum').textContent   = '0';
-  document.getElementById(p + '-playAll').classList.remove('m-hidden');
-  document.getElementById(p + '-nextGen').classList.add('m-hidden');
-  document.getElementById(p + '-nextGen').textContent  = 'Evolve Selected';
-  document.getElementById(p + '-hint').classList.remove('m-hidden');
-  document.getElementById(p + '-finalPanel').classList.add('m-hidden');
-  mRenderCards(p, state, true);
-}
-
-function mRunNextGen(p, state) {
-  if (state.selectedIdx === null) return;
-  var base = state.melodies[state.selectedIdx].slice();
-  state.gen++;
-  mLog(p, '--- generation ' + state.gen + ' ---', 'warn');
-  state.melodies = [];
-  for (var i = 0; i < 5; i++) {
-    var mut = mMutate(base.slice(), state.key), tries = 0;
-    while (!mRules(mut, state.key, state.gen) && tries < 500) { mut = mMutate(mut.slice(), state.key); tries++; }
-    state.melodies.push(mut);
-    mLog(p, 'mutation ' + (i+1) + ' gen ' + state.gen + ' · tries: ' + tries + ' · score: ' + mScore(mut, state.key));
-  }
-  state.selectedIdx = null;
-  document.getElementById(p + '-genLabel').textContent = '// 02 · Generation ' + state.gen + ' — Mutations';
-  document.getElementById(p + '-genNum').textContent   = state.gen;
-  document.getElementById(p + '-nextGen').classList.add('m-hidden');
-  document.getElementById(p + '-hint').classList.remove('m-hidden');
-  mRenderCards(p, state, true);
-
-  if (state.gen >= 3) {
-    document.getElementById(p + '-hint').classList.add('m-hidden');
-    mLog(p, 'max generations reached. select your final melody.', 'ok');
-    if (p === 'ma' && state.seed) {
-      var pick = parseInt(state.seed[Math.floor(Math.random() * state.seed.length)]) % 5;
-      if (pick === 0) pick = 1;
-      mLog(p, 'seed recommends melody ' + pick, 'warn');
-      var recCard = document.querySelector('#ma-grid .m-card[data-idx="' + (pick-1) + '"]');
-      if (recCard) recCard.classList.add('seed-rec');
-    }
-    document.getElementById(p + '-nextGen').textContent = 'Confirm Selection';
-    document.getElementById(p + '-nextGen').classList.remove('m-hidden');
-  }
-}
-
-function mShowFinal(p, state) {
-  var mel = state.melodies[state.selectedIdx];
-  if (!mel) return;
-  mLog(p, 'final melody chosen', 'ok');
-  document.getElementById(p + '-finalPanel').classList.remove('m-hidden');
-  document.getElementById(p + '-finalDisplay').textContent = mReadable(mel);
-  document.getElementById(p + '-playFinal').onclick = function() {
-    document.getElementById(p + '-pdot').classList.add('active');
-    document.getElementById(p + '-status').textContent = 'playing final melody...';
-    var harmony = document.getElementById(p + '-harmony').checked;
-    mPlay(mel, state.key, state.tempo, harmony, function() {
-      document.getElementById(p + '-pdot').classList.remove('active');
-      document.getElementById(p + '-status').textContent = 'done';
-    });
-  };
-}
-
-function mPlayAll(p, state) {
-  if (mIsPlaying) { mStopAll(); return; }
-  var cards = document.querySelectorAll('#' + p + '-grid .m-card');
-  var i = 0;
-  function next() {
-    if (i >= state.melodies.length) {
-      document.getElementById(p + '-pdot').classList.remove('active');
-      document.getElementById(p + '-status').textContent = 'all melodies played';
-      return;
-    }
-    cards.forEach(function(c) { c.classList.remove('playing'); });
-    if (cards[i]) cards[i].classList.add('playing');
-    document.getElementById(p + '-pdot').classList.add('active');
-    document.getElementById(p + '-status').textContent = 'playing melody ' + (i+1) + '...';
-    var harmony = document.getElementById(p + '-harmony').checked;
-    mPlay(state.melodies[i], state.key, state.tempo, harmony, function() {
-      if (cards[i]) cards[i].classList.remove('playing');
-      i++;
-      next();
-    });
-  }
-  next();
-}
-
-function mRestart(p, state, msg) {
-  mStopAll();
-  state.key = []; state.tempo = 120; state.pattern = 'major';
-  state.gen = 0; state.selectedIdx = null; state.melodies = [];
-  document.getElementById(p + '-genPanel').classList.add('m-hidden');
-  document.getElementById(p + '-finalPanel').classList.add('m-hidden');
-  document.getElementById(p + '-log').innerHTML = '<div class="e">> ' + msg + '</div>';
-}
-
-// AUTO TAB
-var maState = { key:[], tempo:120, pattern:'major', gen:0, selectedIdx:null, melodies:[], seed:'' };
-
-document.getElementById('ma-genBtn').onclick = function() {
-  mStopAll();
-  var scene = document.getElementById('ma-scene').value;
-  var result = mSelectTempo(scene);
-  var tempo = result[0], pattern = result[1];
-  maState.tempo = tempo; maState.pattern = pattern;
-  maState.seed  = mRandomSeed(10);
-  maState.key   = mSelectKey(maState.seed, pattern);
-  document.getElementById('ma-seedVal').textContent    = maState.seed;
-  document.getElementById('ma-tempoVal').textContent   = tempo;
-  document.getElementById('ma-patternVal').textContent = pattern.toUpperCase();
-  document.getElementById('ma-seedDisplay').classList.remove('m-hidden');
-  mLog('ma', 'seed: ' + maState.seed + ' · ' + tempo + ' bpm · ' + pattern);
-  mGenInitial('ma', maState);
-};
-
-document.getElementById('ma-playAll').onclick = function() { mPlayAll('ma', maState); };
-document.getElementById('ma-nextGen').onclick  = function() {
-  if (maState.gen >= 3) { mShowFinal('ma', maState); }
-  else { mRunNextGen('ma', maState); }
-};
-document.getElementById('ma-restart').onclick = function() {
-  mRestart('ma', maState, 'restarted. select a scene type to begin.');
-  document.getElementById('ma-seedDisplay').classList.add('m-hidden');
-};
-
-// MANUAL TAB
-var mmState = { key:[], tempo:120, pattern:'major', gen:0, selectedIdx:null, melodies:[] };
-
-document.getElementById('mm-genBtn').onclick = function() {
-  mStopAll();
-  var key   = document.getElementById('mm-key').value;
-  var scale = document.getElementById('mm-scale').value;
-  var tempo = parseInt(document.getElementById('mm-tempo').value) || 120;
-  mmState.tempo = tempo; mmState.pattern = scale;
-  mmState.key   = mSelectKey(key, scale);
-  mLog('mm', 'key: ' + key + ' ' + scale + ' · ' + tempo + ' bpm');
-  mLog('mm', 'scale: ' + mmState.key.map(mNoteNameFromMidi).join(' '));
-  mGenInitial('mm', mmState);
-};
-
-document.getElementById('mm-playAll').onclick = function() { mPlayAll('mm', mmState); };
-document.getElementById('mm-nextGen').onclick  = function() {
-  if (mmState.gen >= 3) { mShowFinal('mm', mmState); }
-  else { mRunNextGen('mm', mmState); }
-};
-document.getElementById('mm-restart').onclick = function() {
-  mRestart('mm', mmState, 'restarted. select a key and tempo to begin.');
-};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && melodyModal.classList.contains('open')) closeMelodyModal(); });
 
 </script>
 </body>
